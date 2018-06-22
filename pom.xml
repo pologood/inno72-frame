@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<!-- yyxk父级依赖管理 -->
+	<parent>
+		<groupId>com.point72</groupId>
+		<artifactId>point72-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>point72-frame</artifactId>
+	<description>
+		point72-frame提供整体架构中通用的部分功能
+	</description>
+	<packaging>pom</packaging>
+	<name>point72-frame</name>
+	<url>http://maven.apache.org</url>
+	
+	<properties>
+	<!-- point72-plugin版本 -->
+		<plugin.version>0.0.1-SNAPSHOT</plugin.version>
+	<!-- point72-frame版本 -->
+		<frame.version>0.0.1-SNAPSHOT</frame.version>
+	</properties>
+
+	<dependencies>
+		
+	</dependencies>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.point72</groupId>
+				<artifactId>point72-http</artifactId>
+				<version>${plugin.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.6</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<!-- 依赖仓库地址 -->
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<url>http://maven.nblow.cn/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!-- 插件仓库地址 -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<url>http://maven.nblow.cn/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	<modules>
+		 <module>point72-core</module>
+		<module>point72-config</module>
+		<module>point72-config-client</module>
+		<module>point72-register-center</module>
+		<module>point72-zuul</module>
+		<module>point72-msg-center</module>
+		<module>point72-alarm-center</module>
+		<module>point72-task-dispatch-center</module>
+  </modules>
+
+
+	<!-- 配置git仓库，release插件使用 -->
+	<scm>
+		<connection>scm:git:ssh://git@git.nblow.cn/yyxk/point72-frame.git</connection>
+		<url>scm:git:ssh://git@git.nblow.cn/yyxk/point72-frame.git</url>
+		<developerConnection>scm:git:ssh://git@git.nblow.cn/yyxk/point72-frame.git</developerConnection>
+		<tag>v1.0</tag>
+	</scm>
+
+</project>
