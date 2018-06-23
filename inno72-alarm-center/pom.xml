@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.inno72</groupId>
+		<artifactId>inno72-frame</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>inno72-alarm-center</artifactId>
+	<name>inno72-alarm-center</name>
+	<url>http://maven.apache.org</url>
+	<packaging>war</packaging>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-mq</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-memcached</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-wechat-api</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-ddtalk-api</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-msg</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-mongo</artifactId>
+			<version>${plugin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.inno72</groupId>
+			<artifactId>inno72-core</artifactId>
+			<version>${frame.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-netflix-eureka-server</artifactId>
+		</dependency>
+
+		<!-- web模块 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+		<!-- 需打为war包时，tomcat由外部提供 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+	</dependencies>
+
+	<build>
+		<finalName>inno72-alarm-center</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

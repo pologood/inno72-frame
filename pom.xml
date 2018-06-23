@@ -3,22 +3,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<!-- yyxk父级依赖管理 -->
 	<parent>
-		<groupId>com.point72</groupId>
-		<artifactId>point72-parent</artifactId>
+		<groupId>com.inno72</groupId>
+		<artifactId>inno72-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>point72-frame</artifactId>
+	<artifactId>inno72-frame</artifactId>
 	<description>
-		point72-frame提供整体架构中通用的部分功能
+		inno72-frame提供整体架构中通用的部分功能
 	</description>
 	<packaging>pom</packaging>
-	<name>point72-frame</name>
+	<name>inno72-frame</name>
 	<url>http://maven.apache.org</url>
 	
 	<properties>
-	<!-- point72-plugin版本 -->
+	<!-- inno72-plugin版本 -->
 		<plugin.version>0.0.1-SNAPSHOT</plugin.version>
-	<!-- point72-frame版本 -->
+	<!-- inno72-frame版本 -->
 		<frame.version>0.0.1-SNAPSHOT</frame.version>
 	</properties>
 
@@ -29,8 +29,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.point72</groupId>
-				<artifactId>point72-http</artifactId>
+				<groupId>com.inno72</groupId>
+				<artifactId>inno72-http</artifactId>
 				<version>${plugin.version}</version>
 			</dependency>
 			
@@ -47,7 +47,7 @@
 	<repositories>
 		<repository>
 			<id>nexus</id>
-			<url>http://maven.nblow.cn/nexus/content/groups/public/</url>
+			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -61,7 +61,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
-			<url>http://maven.nblow.cn/nexus/content/groups/public/</url>
+			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -72,22 +72,22 @@
 	</pluginRepositories>
 	
 	<modules>
-		 <module>point72-core</module>
-		<module>point72-config</module>
-		<module>point72-config-client</module>
-		<module>point72-register-center</module>
-		<module>point72-zuul</module>
-		<module>point72-msg-center</module>
-		<module>point72-alarm-center</module>
-		<module>point72-task-dispatch-center</module>
+		 <module>inno72-core</module>
+		<module>inno72-config</module>
+		<module>inno72-config-client</module>
+		<module>inno72-register-center</module>
+		<module>inno72-zuul</module>
+		<module>inno72-msg-center</module>
+		<module>inno72-alarm-center</module>
+		<module>inno72-task-dispatch-center</module>
   </modules>
 
 
 	<!-- 配置git仓库，release插件使用 -->
 	<scm>
-		<connection>scm:git:ssh://git@git.nblow.cn/yyxk/point72-frame.git</connection>
-		<url>scm:git:ssh://git@git.nblow.cn/yyxk/point72-frame.git</url>
-		<developerConnection>scm:git:ssh://git@git.nblow.cn/yyxk/point72-frame.git</developerConnection>
+		<connection>scm:git:ssh://git@git.nblow.cn/yyxk/inno72-frame.git</connection>
+		<url>scm:git:ssh://git@git.nblow.cn/yyxk/inno72-frame.git</url>
+		<developerConnection>scm:git:ssh://git@git.nblow.cn/yyxk/inno72-frame.git</developerConnection>
 		<tag>v1.0</tag>
 	</scm>
 
