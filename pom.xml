@@ -73,13 +73,13 @@
 
 	<!-- 发布管理 -->
 	<distributionManagement>
-			<repository>
-			<id>deployment</id>
-			<name>Releases</name>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Release Repository</name>
 			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>deployment</id>
+			<id>nexus-snapshots</id>
 			<name>Nexus Snapshot Repository</name>
 			<url>http://47.95.217.215:8094/repository/maven-snapshots/</url>
 		</snapshotRepository>
@@ -99,9 +99,9 @@
 
 	<!-- 配置git仓库，release插件使用 -->
 	<scm>
-		<connection>scm:git:ssh://git@git.nblow.cn/yyxk/inno72-frame.git</connection>
-		<url>scm:git:ssh://git@git.nblow.cn/yyxk/inno72-frame.git</url>
-		<developerConnection>scm:git:ssh://git@git.nblow.cn/yyxk/inno72-frame.git</developerConnection>
+		<connection>scm:git@47.95.217.215:inno72/inno72-frame.git</connection>
+		<url>scm:git@47.95.217.215:inno72/inno72-frame.git</url>
+		<developerConnection>scm:git@47.95.217.215:inno72/inno72-frame.git</developerConnection>
 		<tag>v1.0</tag>
 	</scm>
 
