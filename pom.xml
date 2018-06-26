@@ -47,7 +47,7 @@
 	<repositories>
 		<repository>
 			<id>nexus</id>
-			<url>http://192.168.33.243/:8094/nexus/content/groups/public/</url>
+			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -61,7 +61,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
-			<url>http://192.168.33.243/:8094/nexus/content/groups/public/</url>
+			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -76,12 +76,12 @@
 		<repository>
 			<id>nexus-releases</id>
 			<name>Nexus Release Repository</name>
-			<url>http://192.168.33.243/:8094/repository/maven-releases/</url>
+			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://192.168.33.243/:8094/repository/maven-snapshots/</url>
+			<url>http://47.95.217.215:8094/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	
