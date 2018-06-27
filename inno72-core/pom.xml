@@ -57,6 +57,17 @@
             <artifactId>inno72-config-client</artifactId>
             <version>${frame.version}</version>
         </dependency>
+        <dependency>
+		  <groupId>tk.mybatis</groupId>
+		  <artifactId>mapper-spring-boot-starter</artifactId>
+		  <version>2.0.3</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<groupId>javax.persistence</groupId>
+		  		<artifactId>persistence-api</artifactId>
+		  	</exclusion>
+		  </exclusions>
+        </dependency>
 
         <!-- mysql连接库 -->
         <dependency>
@@ -112,7 +123,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.6</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -54,7 +54,6 @@ public class DBConfig {
 		datasource.setValidationQuery("SELECT 1");
 		datasource.setValidationQueryTimeout( 1000 * 10 );
 		datasource.setTimeBetweenEvictionRunsMillis( 5 * 1000 );
-		datasource.setNumTestsPerEvictionRun( 5 );
 		datasource.setMinEvictableIdleTimeMillis( 5 * 1000 );
 		// 过添加滤器
 		Slf4jLogFilter logFilter = new Slf4jLogFilter();
@@ -70,7 +69,7 @@ public class DBConfig {
 		logger.info("DruidDataSource配置完毕");
 		return datasource;
 	}
-
+	
 	/**
 	 * 配置事务管理器.
 	 * 
@@ -87,4 +86,6 @@ public class DBConfig {
 		logger.info("配置事务管理器DataSourceTransactionManager完毕");
 		return transactionManager;
 	}
+
+
 }

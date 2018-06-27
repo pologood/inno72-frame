@@ -86,7 +86,7 @@ public class AfterThrowingException {
 			}
 		});
 		// 发送到报警中心
-		template.convertAndSend(props.getLogException().getExchange(), props.getLogException().getKey(), dto);
+//		template.convertAndSend(props.getLogException().getExchange(), props.getLogException().getKey(), dto);
 
 	}
 
