@@ -1,11 +1,11 @@
 package com.inno72.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 字符串处理工具类
@@ -269,4 +269,24 @@ public class StringUtil extends StringUtils {
 		return value != null && value.equals("true");
 	}
 
+
+	/**
+	 * 改传入的参数下划线为驼峰格式
+	 * @param str 带下划线参数
+	 * @return 驼峰
+	 */
+	public static String strToUpperCase(String str) {
+		StringBuilder newKey = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			String keyChar = String.valueOf(str.charAt(i));
+			if (keyChar.equals("_") && i < str.length() - 1) {
+				keyChar = String.valueOf(str.charAt(i + 1)).toUpperCase();
+				i++;
+			}
+			if (!keyChar.equals("_")) {
+				newKey.append(keyChar);
+			}
+		}
+		return newKey.toString();
+	}
 }
