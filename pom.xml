@@ -94,7 +94,7 @@
 		<module>inno72-msg-center</module>
 		<module>inno72-alarm-center</module>
 		<module>inno72-task-dispatch-center</module>
-  </modules>
+    </modules>
 
 
 	<!-- 配置git仓库，release插件使用 -->
