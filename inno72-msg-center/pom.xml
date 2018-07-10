@@ -109,8 +109,10 @@
 
     <repositories>
         <repository>
-            <id>getui-nexus</id>
-            <url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>
+            <!--<id>getui-nexus</id>-->
+			<id>nexus-releases</id>
+            <!--<url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>-->
+			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
         </repository>
     </repositories>
 

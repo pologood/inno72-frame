@@ -47,7 +47,7 @@
 	<repositories>
 		<repository>
 			<id>nexus</id>
-			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
+			<url>http://47.95.217.215:8094/repository/maven-public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -61,7 +61,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
-			<url>http://47.95.217.215:8094/nexus/content/groups/public/</url>
+			<url>http://47.95.217.215:8094/repository/maven-public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>

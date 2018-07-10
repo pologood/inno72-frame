@@ -9,3 +9,14 @@
 /inno72-task-dispatch-center/inno72-task-dispatch-center.iml
 /inno72-zuul/inno72-zuul.iml
 
+/inno72-alarm-center/src/main/webapp/WEB-INF/classes/com/
+/inno72-alarm-center/target/
+/inno72-config-client/target/
+/inno72-config/target/
+/inno72-core/target/
+/inno72-msg-center/src/main/webapp/WEB-INF/classes/com/
+/inno72-msg-center/target/
+/inno72-register-center/target/
+/inno72-task-dispatch-center/src/main/webapp/WEB-INF/classes/com/
+/inno72-task-dispatch-center/target/
+/inno72-zuul/target/
