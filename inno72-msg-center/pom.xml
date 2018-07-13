@@ -28,11 +28,6 @@
 
 		<dependency>
 			<groupId>com.inno72</groupId>
-			<artifactId>inno72-memcached</artifactId>
-			<version>${plugin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.inno72</groupId>
 			<artifactId>inno72-redis</artifactId>
 			<version>${plugin.version}</version>
 		</dependency>
@@ -113,6 +108,11 @@
 			<id>nexus-releases</id>
             <!--<url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>-->
 			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
+        </repository>
+
+        <repository>
+            <id>getui-nexus</id>
+            <url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>
         </repository>
     </repositories>
 

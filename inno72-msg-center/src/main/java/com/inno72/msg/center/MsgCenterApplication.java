@@ -15,7 +15,7 @@ import com.inno72.springboot.web.SpringBootServletInitializer;
  */
 @SpringBootApplication(scanBasePackages = { "com.inno72" })
 @EnableEurekaClient
-@EnableConfigurationProperties({ MemcachedKeysProperties.class, SMSProperties.class })
+@EnableConfigurationProperties({ SMSProperties.class })
 public class MsgCenterApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {

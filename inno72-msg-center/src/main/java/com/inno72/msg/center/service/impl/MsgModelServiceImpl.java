@@ -34,13 +34,11 @@ import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.datetime.LocalDateTimeUtil;
 import com.inno72.config.client.ExceptionProperties;
-import com.inno72.config.client.MemcachedKeysProperties;
 import com.inno72.core.aop.WithOutAfterThrowingCut;
 import com.inno72.core.dto.MsgDTO;
 import com.inno72.ddtalk.chat.CorpChatHandler;
 import com.inno72.ddtalk.chat.GroupChatHandler;
 import com.inno72.exception.ExceptionBuilder;
-import com.inno72.memcached.client.MemcachedClientIF;
 import com.inno72.mongo.MongoUtil;
 import com.inno72.msg.center.MessageChildType;
 import com.inno72.msg.center.MessageType;
@@ -73,12 +71,6 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	@Autowired
 	MongoUtil mongoUtil;
-
-	@Autowired
-	private MemcachedClientIF memcachedClient;
-
-	@Autowired
-	MemcachedKeysProperties memKeys;
 
 	@Autowired
 	ExceptionProperties exceptionProp;
@@ -584,15 +576,16 @@ public class MsgModelServiceImpl implements MsgModelService {
 	 * @author Houkm 2017年6月16日
 	 */
 	private String getWechatToken() {
-		// 微信token
-		Object pretoken = memcachedClient.get(memKeys.getWxtoken());
-		if (pretoken == null) {
-			throw ExceptionBuilder.build(exceptionProp).format("systemError").create();
-		}
-		String token = pretoken.toString();
-		// String token =
-		// "R258bliNwcHYUqlvj5217-kpKlmizAQAdtwQ9kpwYsCqvvd7oTQbf2QSPcHT52h7vVFoYdobALPVDpOGBX3nV2DoJhLgPnmA2oyBDzVjfwLSEt1_yc7I0HtJWtka59i3TJFhACACSO";
-		return token;
+//		// 微信token
+//		Object pretoken = memcachedClient.get(memKeys.getWxtoken());
+//		if (pretoken == null) {
+//			throw ExceptionBuilder.build(exceptionProp).format("systemError").create();
+//		}
+//		String token = pretoken.toString();
+//		// String token =
+//		// "R258bliNwcHYUqlvj5217-kpKlmizAQAdtwQ9kpwYsCqvvd7oTQbf2QSPcHT52h7vVFoYdobALPVDpOGBX3nV2DoJhLgPnmA2oyBDzVjfwLSEt1_yc7I0HtJWtka59i3TJFhACACSO";
+		// todo gxg 待修改
+		return "";
 	}
 
 	/**
@@ -602,11 +595,12 @@ public class MsgModelServiceImpl implements MsgModelService {
 	 * @author Houkm 2017年6月16日
 	 */
 	private String getDDToken() {
-		// 微信token
-		Object pretoken = memcachedClient.get(memKeys.getDdtoken());
-
-		String token = pretoken == null ? "0c862edd6cab3467b9a3ecc623594950" : pretoken.toString();
-		return token;
+//		// 微信token
+//		Object pretoken = memcachedClient.get(memKeys.getDdtoken());
+//
+//		String token = pretoken == null ? "0c862edd6cab3467b9a3ecc623594950" : pretoken.toString();
+		// todo gxg 待修改
+		return "";
 	}
 
 	/**
@@ -682,13 +676,14 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	private boolean checkSendTime(MsgModel msgModel) {
 		boolean send = msgModel.getModel().getSendTime().check();
-		if (!send) {
-			logger.info("不在发送时间，消息不发送");
-			msgModel.setStatus("忽略");
-			msgModel.setStatusMessage("不在发送时间");
-			this.save(msgModel);
-		}
-		return send;
+		// todo gxg 需要恢复
+//		if (!send) {
+//			logger.info("不在发送时间，消息不发送");
+//			msgModel.setStatus("忽略");
+//			msgModel.setStatusMessage("不在发送时间");
+//			this.save(msgModel);
+//		}
+		return true;
 	}
 
 	private void generateDDMsgModel(MsgModel msgModel, Map<String, String> params, String title) {
@@ -766,15 +761,16 @@ public class MsgModelServiceImpl implements MsgModelService {
 	 * @author Houkm 2018年4月2日
 	 */
 	private String getXiongZhangToken() {
-		// 熊掌token
-		Object pretoken = memcachedClient.get("$XZ_TOKEN");
-		if (pretoken == null) {
-			throw ExceptionBuilder.build(exceptionProp).format("systemError").create();
-		}
-		String token = pretoken.toString();
-		// String token =
-		// "24.a86907df946abd8d0b96d5238a542ec5.7200.1523422065.282335-11013504";
-		return token;
+//		// 熊掌token
+//		Object pretoken = memcachedClient.get("$XZ_TOKEN");
+//		if (pretoken == null) {
+//			throw ExceptionBuilder.build(exceptionProp).format("systemError").create();
+//		}
+//		String token = pretoken.toString();
+//		// String token =
+//		// "24.a86907df946abd8d0b96d5238a542ec5.7200.1523422065.282335-11013504";
+		// todo gxg 待修改
+		return "";
 	}
 
 }
