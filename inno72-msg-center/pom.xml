@@ -102,7 +102,7 @@
 		</dependency>
 	</dependencies>
 
-    <!--<repositories>-->
+    <repositories>
         <!--<repository>-->
             <!--&lt;!&ndash;<id>getui-nexus</id>&ndash;&gt;-->
 			<!--<id>nexus-releases</id>-->
@@ -110,11 +110,11 @@
 			<!--<url>http://47.95.217.215:8094/repository/maven-releases/</url>-->
         <!--</repository>-->
 
-        <!--<repository>-->
-            <!--<id>getui-nexus</id>-->
-            <!--<url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>-->
-        <!--</repository>-->
-    <!--</repositories>-->
+        <repository>
+            <id>getui-nexus</id>
+            <url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
 	<build>
 		<finalName>inno72-msg-center</finalName>
