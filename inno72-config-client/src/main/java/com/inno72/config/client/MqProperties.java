@@ -6,9 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MqProperties {
 
 	private Queue msg;
-	private Queue doctorCount;
-	private Queue symptonCount;
-	private Queue logDoctor;
+	private Queue custom;
 	private Queue exceptionNotify;
 	private Queue logException;
 
@@ -51,30 +49,6 @@ public class MqProperties {
 		this.msg = msg;
 	}
 
-	public Queue getDoctorCount() {
-		return doctorCount;
-	}
-
-	public void setDoctorCount(Queue doctorCount) {
-		this.doctorCount = doctorCount;
-	}
-
-	public Queue getSymptonCount() {
-		return symptonCount;
-	}
-
-	public void setSymptonCount(Queue symptonCount) {
-		this.symptonCount = symptonCount;
-	}
-
-	public Queue getLogDoctor() {
-		return logDoctor;
-	}
-
-	public void setLogDoctor(Queue logDoctor) {
-		this.logDoctor = logDoctor;
-	}
-
 	public Queue getExceptionNotify() {
 		return exceptionNotify;
 	}
@@ -89,6 +63,14 @@ public class MqProperties {
 
 	public void setLogException(Queue logException) {
 		this.logException = logException;
+	}
+
+	public Queue getCustom() {
+		return custom;
+	}
+
+	public void setCustom(Queue custom) {
+		this.custom = custom;
 	}
 
 }
