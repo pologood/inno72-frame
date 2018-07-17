@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.inno72</groupId>
+		<artifactId>inno72-frame</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>inno72-log-center</artifactId>
+	<name>inno72-log-center</name>
+	<url>http://maven.apache.org</url>
+    <packaging>pom</packaging>
+
+    <repositories>
+        <repository>
+            <!--<id>getui-nexus</id>-->
+			<id>nexus-releases</id>
+            <!--<url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>-->
+			<url>http://47.95.217.215:8094/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>getui-nexus</id>
+            <url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>inno72-log-api</module>
+        <module>inno72-log-flume-kafka-sink</module>
+        <!--<module>inno72-log-sys</module>-->
+    </modules>
+
+</project>
