@@ -29,7 +29,7 @@
     <modules>
         <module>inno72-log-api</module>
         <module>inno72-log-flume-kafka-sink</module>
-        <!--<module>inno72-log-sys</module>-->
+        <module>inno72-log-kafka-consumer</module>
     </modules>
 
 </project>
