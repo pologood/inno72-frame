@@ -1,0 +1,7 @@
+
+####################### inno72-log-flume-kafka-sink  ###############################
+
+################ com.inno72.flume.KafkaSink - kafka : config  ######################
+inno72.log.zookeeper_connect=192.168.33.243:2181
+inno72.log.kafka_metadata_broker_list=192.168.33.243:9092
+inno72.log.logKey=logType
