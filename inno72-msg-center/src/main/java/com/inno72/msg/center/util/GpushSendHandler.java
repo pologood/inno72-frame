@@ -41,7 +41,7 @@ public class GpushSendHandler {
 
 	@PostConstruct
 	private void init() {
-		androidPush = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "OJ0aZl2NVz8oEqdY3MCMM6");
+		androidPush = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "5rOs0t4RQW7giCJY7uSPb9");
 		// iosPush = new IGtPush(host, ios.getAppkey(), ios.getAppsecret());
 		// proPush = new IGtPush(host, pro.getAppkey(), pro.getAppsecret());
 	}
