@@ -90,7 +90,7 @@
 		<module>inno72-config</module>
 		<module>inno72-config-client</module>
 		<module>inno72-register-center</module>
-		<module>inno72-zuul</module>
+		<!--<module>inno72-zuul</module>-->
 		<module>inno72-alarm-center</module>
 		<module>inno72-task-dispatch-center</module>
         <module>inno72-log-center</module>
