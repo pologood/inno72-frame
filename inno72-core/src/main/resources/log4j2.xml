@@ -32,7 +32,7 @@
 
 	<Properties>
 		<!-- 日志文件路径 -->
-		<Property name="filePath">/usr/local/Tomcat/Logs/${sys:application_name}
+		<Property name="filePath">logs/${sys:application_name}
 		</Property>
 		<Property name="PID">????</Property>
 		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>

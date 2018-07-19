@@ -1,44 +1,49 @@
 package com.inno72.flume;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.inno72.util.PropertiesUtil;
-import com.inno72.util.TopicEnum;
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
-import kafka.serializer.StringEncoder;
-import org.apache.commons.lang.StringUtils;
-import org.apache.flume.*;
-import org.apache.flume.conf.Configurable;
-import org.apache.flume.sink.AbstractSink;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.flume.Channel;
+import org.apache.flume.Context;
+import org.apache.flume.Event;
+import org.apache.flume.EventDeliveryException;
+import org.apache.flume.Transaction;
+import org.apache.flume.conf.Configurable;
+import org.apache.flume.sink.AbstractSink;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.inno72.util.PropertiesUtil;
+import com.inno72.util.TopicEnum;
+
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+import kafka.serializer.StringEncoder;
+
 @Component
 public class KafkaSink extends AbstractSink implements Configurable {
+	
+//	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSink.class);
 
 	private Producer<String, String> producer;
-
-
 
 	private static String zkAddress;
 	private static String kafkaAddress;
 	private static String logKey;
 
-
-	@PostConstruct
-	public void init() throws IOException {
-
-		Properties logProperties = new PropertiesUtil().load("/base.propersties");
-		zkAddress = Optional.ofNullable(logProperties.get("zookeeper_connect")).map(Object::toString).orElse("");
-		kafkaAddress = Optional.ofNullable(logProperties.get("kafka_metadata_broker_list")).map(Object::toString).orElse("");
-		logKey = Optional.ofNullable(logProperties.get("logKey")).map(Object::toString).orElse("");
-
+	
+	public KafkaSink() throws IOException {
+		Properties logProperties = new PropertiesUtil().load("/home/logUser/services/flume/conf/base.propersties");
+		zkAddress = Optional.ofNullable(logProperties.get("inno72.log.zookeeper_connect")).map(Object::toString).orElse("");
+		kafkaAddress = Optional.ofNullable(logProperties.get("inno72.log.kafka_metadata_broker_list")).map(Object::toString).orElse("");
+		logKey = Optional.ofNullable(logProperties.get("inno72.log.logKey")).map(Object::toString).orElse("");
+		System.out.println("zkAddress:"+zkAddress);
+		System.out.println("kafkaAddress:"+kafkaAddress);
+		System.out.println("logKey:"+logKey);
 		Properties prop = new Properties();
 		prop.put("zookeeper.connect", zkAddress);
 		prop.put("metadata.broker.list", kafkaAddress);
@@ -48,45 +53,76 @@ public class KafkaSink extends AbstractSink implements Configurable {
 
 	@Override
 	public Status process() throws EventDeliveryException {
-		Status status = null;
+		Status status = Status.READY;
 		Channel channel = getChannel();
 		Transaction transaction = channel.getTransaction();
-		transaction.begin();
 		try {
+			transaction.begin();
+		} catch (Exception e) {
+		}
+		
+		try {
+//			System.out.println("进入自定义sink");
 			Event event = channel.take();
+//			LOGGER.info("event ===> {}", JSON.toJSONString(event));
 			if (event == null) {
-				transaction.rollback();
+				try {
+					transaction.close();
+				} catch (Exception e2) {
+				}
 				return Status.BACKOFF;
 			}
 			byte[] body = event.getBody();
-			final String msg = new String(body);
-			if (StringUtils.isEmpty( msg)){
+//			LOGGER.info("body ===> {}", JSON.toJSONString(body));
+			String msg = new String(body);
+//			System.out.println("自定义sink msg" + msg);
+			if (StringUtils.isBlank(msg)){
+				try {
+					transaction.close();
+				} catch (Exception e2) {
+//					LOGGER.info("关闭事物异常" , e2.getMessage(), e2 );
+				}
 				return Status.BACKOFF;
 			}
+//			System.out.println("开始解析 =================================");
 			JSONObject msgJsonObject = JSON.parseObject(msg);
+			System.out.println("解析后的日志 ===> "+JSON.toJSONString(msgJsonObject));
 			String logType = Optional.ofNullable(msgJsonObject.get(logKey)).map(Object::toString).orElse("");
-
+//			System.out.println("自定义sink logType:" + logType);
 			if ( StringUtils.isEmpty(logType) ){
-				return Status.BACKOFF;
+				status = Status.BACKOFF;
 			}
 
 			TopicEnum byType = TopicEnum.findByType(logType);
-
 			if ( byType == null ){
-				return Status.BACKOFF;
+				status = Status.BACKOFF;
 			}
-
-			final KeyedMessage<String, String> message = new KeyedMessage<String, String>(byType.getTopic(), msg);
-			producer.send(message);
+			
+//			LOGGER.info("kafka 分发topic {}", byType.getTopic());
+			if ( !status.equals(Status.BACKOFF) ) {
+//				System.out.println("创建message ======> "+JSON.toJSONString(byType.getTopic()) +" ；；；；；；；  msg =====> "+msg);
+				final KeyedMessage<String, String> message = new KeyedMessage<String, String>(byType.getTopic(), msg);
+//				System.out.println("message ======> "+JSON.toJSONString(message));
+				producer.send(message);
+			}
 			transaction.commit();
-			status = Status.READY;
 		} catch (Exception e) {
-			transaction.rollback();
+//			LOGGER.info("进入异常 {}----->",e.getMessage(), e);
+			try {
+				transaction.rollback();
+			} catch (Exception e2) {
+//				System.out.println("回滚事物异常" + e2);
+			}
+			
 			status = Status.BACKOFF;
 		} finally {
-			transaction.close();
+			try {
+				transaction.close();
+			} catch (Exception e2) {
+//				System.out.println("关闭事物异常" + e2);
+			}
 		}
-
+//		System.out.println("自定义sink status 结束" + status);
 		return status;
 	}
 
