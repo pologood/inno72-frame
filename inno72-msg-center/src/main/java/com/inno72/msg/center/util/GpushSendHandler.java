@@ -86,9 +86,9 @@ public class GpushSendHandler {
 			return iosPush;
 		} else if (osType == OsType.ANDRIOD.v()) {
 			logger.info("安卓版消息");
-			tpl.setAppId(android.getAppid());
-			tpl.setAppkey(android.getAppkey());
-			target.setAppId(android.getAppid());
+			tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+			tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
+			target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
 			return androidPush;
 		} else if (osType == OsType.PRO.v()) {
 			logger.info("苹果专业版消息");
