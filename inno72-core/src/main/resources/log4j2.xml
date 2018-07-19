@@ -40,6 +40,7 @@
 		<Property name="logFormat">
 			%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN} [${sys:application_name},%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-Span-Export}] ${sys:PID} --- [%15.15t] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}
 		</Property>
+        <Property name="INNO72_LOG_PATTERN">%l %m%n</Property>
 	</Properties>
 
 	<Appenders>
@@ -65,6 +66,18 @@
 			<DefaultRolloverStrategy max="3000" />
 		</RollingFile>
 
+        <Flume name="FlumeAppender" compress="false" type="Embedded">
+            <Property name="channel.type">memory</Property>
+            <Property name="channel.capacity">2000</Property>
+            <Property name="sinks">agent3</Property>
+            <Property name="agent3.type">avro</Property>
+            <!--todo gxg dev.72solo.com 需要动态设置-->
+            <Property name="agent3.hostname">dev.72solo.com</Property>
+            <Property name="agent3.port">41414</Property>
+            <Property name="agent3.batch-size">1000000</Property>
+            <Property name="processor.type">failover</Property>
+            <Inno72JsonPatternLayout pattern="${INNO72_LOG_PATTERN}"/>
+        </Flume>
 
 		<!-- <Kafka topic="log4j2" name="kafka">
 			<PatternLayout pattern="${logFormat}" />
@@ -85,6 +98,7 @@
 			<AppenderRef ref="Console" />
 			<!-- <AppenderRef ref="kafka" /> -->
 			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="FlumeAppender" />
 		</Logger>
 		
 		<Logger name="org.apache.kafka" level="WARN" /><!-- avoid recursive logging -->
