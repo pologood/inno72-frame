@@ -1,10 +1,10 @@
 package com.inno72.log.consumer;
 
 import com.alibaba.fastjson.JSON;
-import com.inno72.log.util.SysLogRepository;
+import com.inno72.log.repository.SysLogRepository;
 import com.inno72.log.util.TopicEnum;
 import com.inno72.log.vo.OtherLog;
-import com.inno72.log.vo.SysLog;
+import com.inno72.log.repository.SysLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

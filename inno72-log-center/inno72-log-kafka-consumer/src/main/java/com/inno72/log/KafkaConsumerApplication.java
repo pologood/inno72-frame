@@ -4,9 +4,11 @@ import com.inno72.springboot.web.SpringApplicationBuilder;
 import com.inno72.springboot.web.SpringBootServletInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.inno72"})
 @EnableDiscoveryClient
+@EnableElasticsearchRepositories(basePackages = "com.inno72.log.vo")
 public class KafkaConsumerApplication extends SpringBootServletInitializer {
 
 //	@Override

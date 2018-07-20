@@ -1,15 +1,17 @@
-package com.inno72.log.vo;
+package com.inno72.log.repository;
 
 
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 @Data
 @Document(indexName = "inno72_dababase", type = "syslog")
 public class SysLog {
 
 	/**
-	 *
+	 *{"logType":"sys","platform":"java","appName":"后台游戏服务","instanceName":"172.16.23.216:null","level":"INFO","time":"2018-07-20 15:41:02","tag":"系统日志tag","detail":"com.company.project.web.UserController.list(UserController.java:60) hello sys log\n"}
 	 */
 	private String id;
 
@@ -50,6 +52,7 @@ public class SysLog {
 	/**
 	 *  日志时间	例如：2018-07-10 12:00:00
 	 */
+	@Field(format = DateFormat.custom,pattern = "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis")
 	private String time;
 
 }
