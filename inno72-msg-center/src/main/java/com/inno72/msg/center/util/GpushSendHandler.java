@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.gexin.rp.sdk.base.IPushResult;
@@ -15,10 +14,6 @@ import com.gexin.rp.sdk.base.impl.Target;
 import com.gexin.rp.sdk.exceptions.RequestException;
 import com.gexin.rp.sdk.http.IGtPush;
 import com.gexin.rp.sdk.template.AbstractTemplate;
-import com.inno72.msg.center.OsType;
-import com.inno72.msg.center.config.GetuiAndroidProperties;
-import com.inno72.msg.center.config.GetuiIOSProperties;
-import com.inno72.msg.center.config.GetuiProProperties;
 
 import lombok.Data;
 
@@ -32,23 +27,23 @@ public class GpushSendHandler {
 	Logger logger = LoggerFactory.getLogger(GpushSendHandler.class);
 
 	private IGtPush androidPush;
-	private IGtPush iosPush;
-	private IGtPush proPush;
+	// private IGtPush iosPush;
+	// private IGtPush proPush;
 
-	@Autowired
-	GetuiAndroidProperties android;
-	@Autowired
-	GetuiIOSProperties ios;
-	@Autowired
-	GetuiProProperties pro;
+	// @Autowired
+	// GetuiAndroidProperties android;
+	// @Autowired
+	// GetuiIOSProperties ios;
+	// @Autowired
+	// GetuiProProperties pro;
 
 	private String host;
 
 	@PostConstruct
 	private void init() {
-		androidPush = new IGtPush(host, android.getAppkey(), android.getAppsecret());
-		iosPush = new IGtPush(host, ios.getAppkey(), ios.getAppsecret());
-		proPush = new IGtPush(host, pro.getAppkey(), pro.getAppsecret());
+		androidPush = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "5rOs0t4RQW7giCJY7uSPb9");
+		// iosPush = new IGtPush(host, ios.getAppkey(), ios.getAppsecret());
+		// proPush = new IGtPush(host, pro.getAppkey(), pro.getAppsecret());
 	}
 
 	public Map<String, Object> single(String receiver, AbstractTemplate tpl, int osType) {
@@ -78,27 +73,27 @@ public class GpushSendHandler {
 	}
 
 	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target) {
-		if (osType == OsType.IOS.v()) {
-			logger.info("苹果基础版消息");
-			tpl.setAppId(ios.getAppid());
-			tpl.setAppkey(ios.getAppkey());
-			target.setAppId(ios.getAppid());
-			return iosPush;
-		} else if (osType == OsType.ANDRIOD.v()) {
-			logger.info("安卓版消息");
-			tpl.setAppId(android.getAppid());
-			tpl.setAppkey(android.getAppkey());
-			target.setAppId(android.getAppid());
-			return androidPush;
-		} else if (osType == OsType.PRO.v()) {
-			logger.info("苹果专业版消息");
-			tpl.setAppId(pro.getAppid());
-			tpl.setAppkey(pro.getAppkey());
-			target.setAppId(pro.getAppid());
-			return proPush;
-		} else {
-			return null;
-		}
+		// if (osType == OsType.IOS.v()) {
+		// logger.info("苹果基础版消息");
+		// tpl.setAppId(ios.getAppid());
+		// tpl.setAppkey(ios.getAppkey());
+		// target.setAppId(ios.getAppid());
+		// return iosPush;
+		// } else if (osType == OsType.ANDRIOD.v()) {
+		logger.info("安卓版消息");
+		tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+		tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
+		target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+		return androidPush;
+		// } else if (osType == OsType.PRO.v()) {
+		// logger.info("苹果专业版消息");
+		// tpl.setAppId(pro.getAppid());
+		// tpl.setAppkey(pro.getAppkey());
+		// target.setAppId(pro.getAppid());
+		// return proPush;
+		// } else {
+		// return null;
+		// }
 	}
 
 }
