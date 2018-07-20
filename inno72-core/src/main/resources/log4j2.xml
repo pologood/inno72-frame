@@ -1,114 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Configuration status="INFO" packages="com.inno72.log4j2">
+<Configuration status="INFO" packages="com.point72.log4j2">
 
-<!-- 
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
-此文件请不要格式化
- -->
+    <!--
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+    此文件请不要格式化
+     -->
 
 
 
-	<Properties>
-		<!-- 日志文件路径 -->
-		<Property name="filePath">logs/${sys:application_name}
-		</Property>
-		<Property name="PID">????</Property>
-		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
-		<Property name="LOG_LEVEL_PATTERN">%5p</Property>
-		<Property name="logFormat">
-			%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN} [${sys:application_name},%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-Span-Export}] ${sys:PID} --- [%15.15t] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}
-		</Property>
-        <Property name="INNO72_LOG_PATTERN">%l %m%n</Property>
-	</Properties>
+    <Properties>
+        <!-- 日志文件路径 -->
+        <Property name="filePath">/usr/local/Tomcat/Logs/${sys:application_name}
+        </Property>
+        <Property name="PID">????</Property>
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="logFormat">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN} [${sys:application_name},%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-Span-Export}] ${sys:PID} --- [%15.15t] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}
+        </Property>
+    </Properties>
 
-	<Appenders>
-		<!-- 配置控制台输出 -->
-		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="${logFormat}" />
-		</Console>
+    <Appenders>
+        <!-- 配置控制台输出 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logFormat}" />
+        </Console>
 
-		<!-- 配置info日志文件 -->
-		<RollingFile name="RollingFile" fileName="${filePath}/info.log"
-			filePattern="${filePath}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
-			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
-			<ThresholdFilter level="debug" onMatch="NEUTRAL"
-				onMismatch="DENY" />
-			<!-- <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%p] - %l - 
-				%m%n" /> -->
-			<PatternLayout pattern="${logFormat}" />
-			<Policies>
-				<!-- 新建文件的时间策略 -->
-				<TimeBasedTriggeringPolicy interval="1"
-					modulate="true" />
-			</Policies>
-			<DefaultRolloverStrategy max="3000" />
-		</RollingFile>
+        <!-- 配置info日志文件 -->
+        <RollingFile name="RollingFile" fileName="${filePath}/info.log"
+                     filePattern="${filePath}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="debug" onMatch="NEUTRAL"
+                             onMismatch="DENY" />
+            <!-- <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%p] - %l -
+                %m%n" /> -->
+            <PatternLayout pattern="${logFormat}" />
+            <Policies>
+                <!-- 新建文件的时间策略 -->
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true" />
+            </Policies>
+            <DefaultRolloverStrategy max="3000" />
+        </RollingFile>
 
-        <Flume name="FlumeAppender" compress="false" type="Embedded">
-            <Property name="channel.type">memory</Property>
-            <Property name="channel.capacity">2000</Property>
-            <Property name="sinks">agent3</Property>
-            <Property name="agent3.type">avro</Property>
-            <!--todo gxg dev.72solo.com 需要动态设置-->
-            <Property name="agent3.hostname">dev.72solo.com</Property>
-            <Property name="agent3.port">41414</Property>
-            <Property name="agent3.batch-size">1000000</Property>
-            <Property name="processor.type">failover</Property>
-            <Inno72JsonPatternLayout pattern="${INNO72_LOG_PATTERN}"/>
-        </Flume>
 
-		<!-- <Kafka topic="log4j2" name="kafka">
-			<PatternLayout pattern="${logFormat}" />
-			<Property name="bootstrap.servers">kafka.sbbsk.com:9092</Property>
-		</Kafka> -->
+        <!-- <Kafka topic="log4j2" name="kafka">
+            <PatternLayout pattern="${logFormat}" />
+            <Property name="bootstrap.servers">kafka.sbbsk.com:9092</Property>
+        </Kafka> -->
 
-	</Appenders>
-	<!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
-	<Loggers>
-		<!-- com.inno72下的日志输出目的地 -->
-		<Logger name="com.inno72" level="DEBUG" additivity="false">
-			<!-- <AppenderRef ref="kafka" /> -->
-			<AppenderRef ref="Console" />
-			<AppenderRef ref="RollingFile" />
-		</Logger>
-		<!-- sql日志输出目的地 -->
-		<Logger name="druid.sql.Statement" level="DEBUG" additivity="false">
-			<AppenderRef ref="Console" />
-			<!-- <AppenderRef ref="kafka" /> -->
-			<AppenderRef ref="RollingFile" />
-			<AppenderRef ref="FlumeAppender" />
-		</Logger>
-		
-		<Logger name="org.apache.kafka" level="WARN" /><!-- avoid recursive logging -->
-		
+    </Appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+    <Loggers>
+        <!-- com.point72下的日志输出目的地 -->
+        <Logger name="com.point72" level="DEBUG" additivity="false">
+            <!-- <AppenderRef ref="kafka" /> -->
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFile" />
+        </Logger>
+        <!-- sql日志输出目的地 -->
+        <Logger name="druid.sql.Statement" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" />
+            <!-- <AppenderRef ref="kafka" /> -->
+            <AppenderRef ref="RollingFile" />
+        </Logger>
 
-		<!-- 其它日志 -->
-		<Root level="INFO">
-			<AppenderRef ref="Console" />
-			<!-- <AppenderRef ref="kafka" /> -->
-			<AppenderRef ref="RollingFile" />
-		</Root>
-	</Loggers>
+        <Logger name="org.apache.kafka" level="WARN" /><!-- avoid recursive logging -->
+
+
+        <!-- 其它日志 -->
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+            <!-- <AppenderRef ref="kafka" /> -->
+            <AppenderRef ref="RollingFile" />
+        </Root>
+    </Loggers>
 </Configuration>
