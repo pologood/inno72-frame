@@ -21,4 +21,9 @@
 /inno72-task-dispatch-center/target/
 /inno72-zuul/target/
 /inno72-msg-center/src/main/webapp/WEB-INF/classes/
+/inno72-log-center/inno72-log-api/inno72-log-api.iml
+/inno72-log-center/inno72-log-center.iml
+/inno72-log-center/inno72-log-flume-kafka-sink/inno72-log-flume-kafka-sink.iml
+/inno72-log-center/inno72-log-kafka-consumer/inno72-log-kafka-consumer.iml
+
 
