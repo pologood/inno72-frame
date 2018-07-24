@@ -1,29 +1,32 @@
 package com.inno72.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.inno72.common.Inno72LogTaskServiceProperties;
-import com.inno72.common.util.FastJsonUtils;
-import com.inno72.common.util.FileUtil;
-import com.inno72.common.utils.StringUtil;
-import com.inno72.log.LogAllContext;
-import com.inno72.log.LogContext;
-import com.inno72.log.vo.LogType;
-import com.inno72.mapper.Inno72AppLogMapper;
-import com.inno72.model.Inno72AppLog;
-import com.inno72.service.ImportAppLogService;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.*;
+import com.alibaba.fastjson.JSON;
+import com.inno72.common.util.FastJsonUtils;
+import com.inno72.common.util.FileUtil;
+import com.inno72.common.utils.StringUtil;
+import com.inno72.log.LogAllContext;
+import com.inno72.log.vo.LogType;
+import com.inno72.mapper.Inno72AppLogMapper;
+import com.inno72.model.Inno72AppLog;
+import com.inno72.service.ImportAppLogService;
 
 @Service("importAppLogService")
 public class ImportAppLogServiceImpl implements ImportAppLogService {
@@ -65,6 +68,7 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 
 	class DownloadThread extends Thread {
 
+		@SuppressWarnings("unused")
 		private Inno72AppLog inno72AppLog;
 
 		public DownloadThread(Inno72AppLog inno72AppLog){
