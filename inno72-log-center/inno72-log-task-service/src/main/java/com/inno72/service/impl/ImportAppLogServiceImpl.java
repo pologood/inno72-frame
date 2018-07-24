@@ -55,6 +55,11 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 				ParseLog parseLog = new ParseLog(log);
 				Future<Inno72AppLog> submit = executorService.submit(parseLog);
 				futures.add(submit);
+			}else {
+				log.setReciveTime(LocalDateTime.now());
+				log.setErrorLog("下载失败");
+				log.setStatus(Inno72AppLog.Inno72AppLog_status.FAIL.status());
+				inno72AppLogMapper.updateByPrimaryKeySelective(log);
 			}
 		}
 		for (Future<Inno72AppLog> futureTask : futures){
@@ -65,34 +70,6 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 		executorService.shutdown();
 	}
 
-
-	class DownloadThread extends Thread {
-
-		@SuppressWarnings("unused")
-		private Inno72AppLog inno72AppLog;
-
-		public DownloadThread(Inno72AppLog inno72AppLog){
-			this.inno72AppLog = inno72AppLog;
-		}
-		@Override
-		public void run() {
-			try {
-
-				boolean download = true;
-				//				boolean download = FileUtil.download(inno72AppLog.getLogUrl());
-				if (download){
-					//					futures.add(new FutureTask(new ParseLog(inno72AppLog)));
-				}
-			}catch (Exception e){
-				System.out.println(e.getMessage());
-			}
-
-
-		}
-	}
-
-	//	@Autowired
-	//	private Inno72LogTaskServiceProperties inno72LogTaskServiceProperties;
 
 	class ParseLog implements Callable<Inno72AppLog>{
 
@@ -105,7 +82,7 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 		}
 
 		@Override
-		public Inno72AppLog call() throws Exception {
+		public Inno72AppLog call() {
 
 			//			String localBasePath = inno72LogTaskServiceProperties.get("log_local0_path");
 			String localBasePath = "/tmp/";
@@ -145,32 +122,39 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 							LOGGER.info("当前行 ： {}" , temp);
 
 							String logType = FastJsonUtils.getString(temp, "logType");
+							assert StringUtil.isNotEmpty(logType);
+
 							LogType logTypeE = null;
+
 							switch (logType){
+
 								case "product" :
 									logTypeE = LogType.PRODUCT;
+
 								case "biz" :
 									logTypeE = LogType.BIZ;
+
 								case "sys" :
 									logTypeE = LogType.SYS;
+
 							}
+
 							if ( logTypeE == null ){
 								continue;
 							}
 
 							new LogAllContext(logTypeE)
-							.tag("产品日志")
-							.activityId(FastJsonUtils.getString(temp,"activityId"))
-							.appName(FastJsonUtils.getString(temp,"appName"))
-							.detail(FastJsonUtils.getString(temp,"detail"))
-							.instanceName(FastJsonUtils.getString(temp,"instanceName"))
-							.level(FastJsonUtils.getString(temp,"level"))
-							.operatorId(FastJsonUtils.getString(temp,"operatorId"))
-							.platform(FastJsonUtils.getString(temp,"platform"))
-							.time(FastJsonUtils.getString(temp,"time"))
-//							.userId(FastJsonUtils.getString(temp,"userId"))
-							.userId("我是测试userId")
-							.bulid();
+									.tag(FastJsonUtils.getString(temp,"tag"))
+									.activityId(FastJsonUtils.getString(temp,"activityId"))
+									.appName(FastJsonUtils.getString(temp,"appName"))
+									.detail(FastJsonUtils.getString(temp,"detail"))
+									.instanceName(FastJsonUtils.getString(temp,"instanceName"))
+									.level(FastJsonUtils.getString(temp,"level"))
+									.operatorId(FastJsonUtils.getString(temp,"operatorId"))
+									.platform(FastJsonUtils.getString(temp,"platform"))
+									.time(FastJsonUtils.getString(temp,"time"))
+									.userId(FastJsonUtils.getString(temp,"userId"))
+									.bulid();
 							LOGGER.info("安卓产品上报日志! === {} ", temp);
 
 							if (line % 1000 == 0){
@@ -180,13 +164,16 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 									LOGGER.error("线程睡眠异常 {}", e.getMessage());
 								}
 							}
+
 						}
 					}catch(Exception e){
-						inno72AppLog.setErrorLog("解析数据不完整");
+
+						LOGGER.info("解析{}数据第{}错误 {}", JSON.toJSONString(inno72AppLog), line, e.getMessage(), e);
+						inno72AppLog.setErrorLog("解析数据错误");
 						inno72AppLog.setStatus(Inno72AppLog.Inno72AppLog_status.FAIL.status());
 						return inno72AppLog;
-					}
-					finally{
+
+					}finally{
 						if(reader!=null){
 							try{
 								reader.close();
@@ -196,6 +183,7 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 							}
 						}
 					}
+
 				}
 				inno72AppLog.setErrorLog("Completion");
 				inno72AppLog.setStatus(Inno72AppLog.Inno72AppLog_status.SUCC.status());

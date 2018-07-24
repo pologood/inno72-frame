@@ -19,7 +19,11 @@
             <artifactId>inno72-core</artifactId>
             <version>${frame.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-log</artifactId>
+            <version>${frame.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-eureka-server</artifactId>
@@ -37,6 +41,7 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>
