@@ -55,6 +55,7 @@ import com.inno72.msg.center.service.MsgModelService;
 import com.inno72.msg.center.service.MsgTemplateModelService;
 import com.inno72.msg.center.util.GpushSendHandler;
 import com.inno72.msg.center.util.SmsSendHandler;
+import com.inno72.plugin.http.HttpClient;
 import com.inno72.wechat.common.ResultHandler;
 import com.inno72.wechat.msg.MsgSender;
 import com.inno72.wechat.msg.custom.TextMsgModel;
@@ -239,7 +240,8 @@ public class MsgModelServiceImpl implements MsgModelService {
 		String content = textModel.getContent();
 		logger.info("消息内容: {}", content);
 		String result = null;
-		com.inno72.ddtalk.chat.model.TextMsgModel model = new com.inno72.ddtalk.chat.model.TextMsgModel(content, chatid);
+		com.inno72.ddtalk.chat.model.TextMsgModel model = new com.inno72.ddtalk.chat.model.TextMsgModel(content,
+				chatid);
 		if (msgModel.isRobot()) {
 			String token = chatid;
 			model.setChatid(null);
@@ -576,14 +578,16 @@ public class MsgModelServiceImpl implements MsgModelService {
 	 * @author Houkm 2017年6月16日
 	 */
 	private String getWechatToken() {
-//		// 微信token
-//		Object pretoken = memcachedClient.get(memKeys.getWxtoken());
-//		if (pretoken == null) {
-//			throw ExceptionBuilder.build(exceptionProp).format("systemError").create();
-//		}
-//		String token = pretoken.toString();
-//		// String token =
-//		// "R258bliNwcHYUqlvj5217-kpKlmizAQAdtwQ9kpwYsCqvvd7oTQbf2QSPcHT52h7vVFoYdobALPVDpOGBX3nV2DoJhLgPnmA2oyBDzVjfwLSEt1_yc7I0HtJWtka59i3TJFhACACSO";
+		// // 微信token
+		// Object pretoken = memcachedClient.get(memKeys.getWxtoken());
+		// if (pretoken == null) {
+		// throw
+		// ExceptionBuilder.build(exceptionProp).format("systemError").create();
+		// }
+		// String token = pretoken.toString();
+		// // String token =
+		// //
+		// "R258bliNwcHYUqlvj5217-kpKlmizAQAdtwQ9kpwYsCqvvd7oTQbf2QSPcHT52h7vVFoYdobALPVDpOGBX3nV2DoJhLgPnmA2oyBDzVjfwLSEt1_yc7I0HtJWtka59i3TJFhACACSO";
 		// todo gxg 待修改
 		return "";
 	}
@@ -595,11 +599,18 @@ public class MsgModelServiceImpl implements MsgModelService {
 	 * @author Houkm 2017年6月16日
 	 */
 	private String getDDToken() {
-//		// 微信token
-//		Object pretoken = memcachedClient.get(memKeys.getDdtoken());
-//
-//		String token = pretoken == null ? "0c862edd6cab3467b9a3ecc623594950" : pretoken.toString();
+		// // 微信token
+		// Object pretoken = memcachedClient.get(memKeys.getDdtoken());
+		//
+		// String token = pretoken == null ? "0c862edd6cab3467b9a3ecc623594950"
+		// : pretoken.toString();
 		// todo gxg 待修改
+		String url = "https://oapi.dingtalk.com/gettoken?corpid=dingd04d2d6ca18d0fd535c2f4657eb6378f&corpsecret=2ralypy62nV4kL8DOMjWWEoJyQkFnjNhlin3PzdkIMs1LQ7jj8huTsqibi7UdaKD";
+		String result = HttpClient.get(url);
+		JSONObject resultJson = JSON.parseObject(result);
+		if (resultJson.getInteger("errcode") == 0) {
+			return resultJson.getString("access_token");
+		}
 		return "";
 	}
 
@@ -677,12 +688,12 @@ public class MsgModelServiceImpl implements MsgModelService {
 	private boolean checkSendTime(MsgModel msgModel) {
 		boolean send = msgModel.getModel().getSendTime().check();
 		// todo gxg 需要恢复
-//		if (!send) {
-//			logger.info("不在发送时间，消息不发送");
-//			msgModel.setStatus("忽略");
-//			msgModel.setStatusMessage("不在发送时间");
-//			this.save(msgModel);
-//		}
+		// if (!send) {
+		// logger.info("不在发送时间，消息不发送");
+		// msgModel.setStatus("忽略");
+		// msgModel.setStatusMessage("不在发送时间");
+		// this.save(msgModel);
+		// }
 		return true;
 	}
 
@@ -761,14 +772,16 @@ public class MsgModelServiceImpl implements MsgModelService {
 	 * @author Houkm 2018年4月2日
 	 */
 	private String getXiongZhangToken() {
-//		// 熊掌token
-//		Object pretoken = memcachedClient.get("$XZ_TOKEN");
-//		if (pretoken == null) {
-//			throw ExceptionBuilder.build(exceptionProp).format("systemError").create();
-//		}
-//		String token = pretoken.toString();
-//		// String token =
-//		// "24.a86907df946abd8d0b96d5238a542ec5.7200.1523422065.282335-11013504";
+		// // 熊掌token
+		// Object pretoken = memcachedClient.get("$XZ_TOKEN");
+		// if (pretoken == null) {
+		// throw
+		// ExceptionBuilder.build(exceptionProp).format("systemError").create();
+		// }
+		// String token = pretoken.toString();
+		// // String token =
+		// //
+		// "24.a86907df946abd8d0b96d5238a542ec5.7200.1523422065.282335-11013504";
 		// todo gxg 待修改
 		return "";
 	}
