@@ -22,7 +22,7 @@ import java.util.Properties;
 
 @Component
 public class KafkaSink extends AbstractSink implements Configurable {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaSink.class);
 
 	private Producer<String, String> producer;
@@ -31,7 +31,7 @@ public class KafkaSink extends AbstractSink implements Configurable {
 	private static String kafkaAddress;
 	private static String logKey;
 
-	
+
 	public KafkaSink() throws IOException {
 		Properties logProperties = new PropertiesUtil().load("/home/logUser/services/flume/conf/base.propersties");
 		zkAddress = Optional.ofNullable(logProperties.get("inno72.log.zookeeper_connect")).map(Object::toString).orElse("");
@@ -52,6 +52,12 @@ public class KafkaSink extends AbstractSink implements Configurable {
 		Status status = Status.READY;
 		Channel channel = getChannel();
 		Transaction transaction = channel.getTransaction();
+
+		Event event = channel.take();
+		LOGGER.info("event ===> {}", JSON.toJSONString(event));
+		if (event == null) {
+			return Status.BACKOFF;
+		}
 		try {
 			transaction.begin();
 		} catch (Exception e) {
@@ -59,17 +65,9 @@ public class KafkaSink extends AbstractSink implements Configurable {
 		}
 
 		try {
+
 			System.out.println("进入自定义sink");
-			Event event = channel.take();
-			LOGGER.info("event ===> {}", JSON.toJSONString(event));
-			if (event == null) {
-				try {
-					transaction.close();
-				} catch (Exception e2) {
-					LOGGER.info("关闭事物异常 =========>{} ===》getMessage {}", event, e2.getMessage(), e2);
-				}
-				return Status.BACKOFF;
-			}
+
 			byte[] body = event.getBody();
 			LOGGER.info("body ===> {}", JSON.toJSONString(body));
 			String msg = new String(body);
@@ -127,12 +125,12 @@ public class KafkaSink extends AbstractSink implements Configurable {
 	@Override
 	public void configure(Context arg0) {
 		// todo 设置到配置文件
-//		Properties prop = new Properties();
-//		prop.put("zookeeper.connect", "192.168.33.243:2181");
-//		prop.put("metadata.broker.list", "192.168.33.243:9092");
-//		prop.put("zookeeper.connect", PropertiesUtil.getProperty("zookeeper.connect"));
-//		prop.put("metadata.broker.list", PropertiesUtil.getProperty("metadata.broker.list"));
-//		prop.put("serializer.class", StringEncoder.class.getName());
-//		producer = new Producer<String, String>(new ProducerConfig(prop));
+		//		Properties prop = new Properties();
+		//		prop.put("zookeeper.connect", "192.168.33.243:2181");
+		//		prop.put("metadata.broker.list", "192.168.33.243:9092");
+		//		prop.put("zookeeper.connect", PropertiesUtil.getProperty("zookeeper.connect"));
+		//		prop.put("metadata.broker.list", PropertiesUtil.getProperty("metadata.broker.list"));
+		//		prop.put("serializer.class", StringEncoder.class.getName());
+		//		producer = new Producer<String, String>(new ProducerConfig(prop));
 	}
 }

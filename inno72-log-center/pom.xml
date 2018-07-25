@@ -30,6 +30,7 @@
         <module>inno72-log-api</module>
         <module>inno72-log-flume-kafka-sink</module>
         <module>inno72-log-kafka-consumer</module>
+        <module>inno72-log-task-service</module>
     </modules>
 
 </project>
