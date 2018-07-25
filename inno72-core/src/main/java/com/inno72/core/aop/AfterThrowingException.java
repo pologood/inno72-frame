@@ -8,19 +8,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.inno72.annotation.ExceptionNotify;
 import com.inno72.config.client.MqProperties;
 import com.inno72.core.dto.LogExceptionDTO;
 
-@Aspect
-@Component
+//
+//@Aspect
+//@Component
 public class AfterThrowingException {
 
 	@Pointcut("within(com.inno72..*) && !@annotation(com.inno72.core.aop.WithOutAfterThrowingCut) && !execution(* com.inno72.msg.center.*.*(..))")
@@ -86,7 +85,8 @@ public class AfterThrowingException {
 			}
 		});
 		// 发送到报警中心
-//		template.convertAndSend(props.getLogException().getExchange(), props.getLogException().getKey(), dto);
+		// template.convertAndSend(props.getLogException().getExchange(),
+		// props.getLogException().getKey(), dto);
 
 	}
 
