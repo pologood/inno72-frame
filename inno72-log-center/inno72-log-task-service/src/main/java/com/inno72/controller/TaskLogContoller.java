@@ -27,12 +27,13 @@ public class TaskLogContoller {
 				.appName("appName")
 				.detail("detail")
 				.instanceName("instanceName")
-				.level("level")
+				.level("dev")
 				.operatorId("operatorId")
 				.platform("platform")
-				.time("time")
-				.userId("userId")
+				.time("2018-01-01 10:09:22")
+				.userId("123321231")
 				.bulid();
+		
 		LOGGER.info("安卓产品上报日志! === {} ", "");
 	}
 
