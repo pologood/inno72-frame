@@ -21,7 +21,7 @@ public class TaskLogContoller {
 
 	@GetMapping("/task/insert")
 	public void testInsert(){
-		new LogAllContext(LogType.SYS)
+		new LogAllContext(LogType.PRODUCT)
 				.tag("产品日志")
 				.activityId("activityId")
 				.appName("appName")
@@ -33,6 +33,7 @@ public class TaskLogContoller {
 				.time("2018-01-01 10:09:22")
 				.userId("123321231")
 				.bulid();
+		
 		LOGGER.info("安卓产品上报日志! === {} ", "");
 	}
 

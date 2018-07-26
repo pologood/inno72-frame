@@ -4,9 +4,9 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.inno72</groupId>
-	<artifactId>inno72-log-kafka-consumer</artifactId>
+	<artifactId>inno72-log-kafka-es-consumer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-	<name>inno72-log-kafka-consumer</name>
+	<name>inno72-log-kafka-es-consumer</name>
 	<url>http://maven.apache.org</url>
 	<packaging>war</packaging>
     <description>kafka消费者</description>
@@ -29,13 +29,13 @@
     <dependencies>
         <dependency>
             <groupId>com.inno72</groupId>
-            <artifactId>inno72-mongo</artifactId>
-            <version>${inno72-plugin-version}</version>
+            <artifactId>inno72-core</artifactId>
+            <version>${inno72-frame-version}</version>
         </dependency>
         <dependency>
             <groupId>com.inno72</groupId>
-            <artifactId>inno72-core</artifactId>
-            <version>${inno72-frame-version}</version>
+            <artifactId>inno72-es</artifactId>
+            <version>${inno72-plugin-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
