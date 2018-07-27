@@ -109,6 +109,9 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 				LOGGER.info("{}上报日志,{}", JSON.toJSONString(inno72AppLog), JSON.toJSONString(files));
 
 				for ( File curFile : files ){
+					if (!curFile.isFile()){
+						continue;
+					}
 					BufferedReader reader=null;
 					String temp=null;
 					int line=1;
