@@ -119,7 +119,8 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 							if (StringUtil.isEmpty(temp)){
 								continue;
 							}
-							LOGGER.info("当前行 ： {}" , temp);
+							System.out.println(temp);
+							LOGGER.debug("当前行 ： {}" , temp);
 
 							String logType = FastJsonUtils.getString(temp, "logType");
 							assert StringUtil.isNotEmpty(logType);
@@ -169,7 +170,7 @@ public class ImportAppLogServiceImpl implements ImportAppLogService {
 					}catch(Exception e){
 
 						LOGGER.info("解析{}数据第{}错误 {}", JSON.toJSONString(inno72AppLog), line, e.getMessage(), e);
-						inno72AppLog.setErrorLog("解析数据错误");
+						inno72AppLog.setErrorLog("解析{"+temp+"}数据错误" );
 						inno72AppLog.setStatus(Inno72AppLog.Inno72AppLog_status.FAIL.status());
 						return inno72AppLog;
 
