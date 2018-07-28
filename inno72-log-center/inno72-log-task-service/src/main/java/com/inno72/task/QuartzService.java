@@ -12,7 +12,7 @@ public class QuartzService {
 	@Autowired
 	private ImportAppLogService importAppLogService;
 
-	@Scheduled(cron = "0 10 * * * ?")
+	@Scheduled(cron = "0 0/10 * * * ?")
 	public void tast() throws Exception {
 		importAppLogService.execute();
 	}
