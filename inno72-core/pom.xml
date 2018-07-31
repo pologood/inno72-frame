@@ -46,12 +46,6 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
-        <dependency>
-            <groupId>com.inno72</groupId>
-            <artifactId>inno72-log</artifactId>
-            <version>${plugin.version}</version>
-        </dependency>
-
 		<!-- 配置客户端 -->
 		<dependency>
 			<groupId>com.inno72</groupId>
