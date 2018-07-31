@@ -1,5 +1,6 @@
 package com.inno72.msg.center.service.impl;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import javax.annotation.Resource;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -49,6 +52,7 @@ import com.inno72.msg.center.model.LinkModel;
 import com.inno72.msg.center.model.MsgModel;
 import com.inno72.msg.center.model.MsgTemplateModel;
 import com.inno72.msg.center.model.PushModel;
+import com.inno72.msg.center.model.QyWechatMsgModel;
 import com.inno72.msg.center.model.TextModel;
 import com.inno72.msg.center.model.WechatTemplateMsgModel;
 import com.inno72.msg.center.service.MsgModelService;
@@ -56,6 +60,7 @@ import com.inno72.msg.center.service.MsgTemplateModelService;
 import com.inno72.msg.center.util.GpushSendHandler;
 import com.inno72.msg.center.util.SmsSendHandler;
 import com.inno72.plugin.http.HttpClient;
+import com.inno72.redis.IRedisUtil;
 import com.inno72.wechat.common.ResultHandler;
 import com.inno72.wechat.msg.MsgSender;
 import com.inno72.wechat.msg.custom.TextMsgModel;
@@ -72,6 +77,8 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	@Autowired
 	MongoUtil mongoUtil;
+	@Resource
+	private IRedisUtil redisUtil;
 
 	@Autowired
 	ExceptionProperties exceptionProp;
@@ -84,6 +91,8 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	private static final String EXTERNAL_TOKEN_KEY = "WECHAT_TOKEN";
 	private static final String EXTERNAL_WECHAT_TEMPLATE_MSG_ID = "EXTERNAL_WECHAT_TEMPLATE_MSG_ID";
+	private static final String QY_WECHAT_TOKEN = "public:qyWeChatAccessToken";
+	private static final String QY_WECHATMSG_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
 
 	@Override
 	public void save(MsgModel msgModel) {
@@ -223,6 +232,44 @@ public class MsgModelServiceImpl implements MsgModelService {
 		msgModel.setReceiver(mqModel.getReceiver()); // 设置接收人
 		logger.info("初始化消息: {}", JSON.toJSONString(msgModel));
 		return msgModel;
+	}
+
+	@Override
+	public void sendQyWechatMsg(MsgDTO mqModel) {
+		logger.info("企业微信消息");
+
+		/*
+		 * { "touser" : "UserID1|UserID2|UserID3", "toparty" :
+		 * "PartyID1|PartyID2", "totag" : "TagID1 | TagID2", "msgtype" : "text",
+		 * "agentid" : 1, "text" : { "content" :
+		 * "你的快递已到，请携带工卡前往邮件中心领取。\n出发前可查看<a href=\"http://work.weixin.qq.com\">邮件中心视频实况</a>，聪明避开排队。"
+		 * }, "safe":0 }
+		 */
+		MsgModel msgModel = this.init(mqModel); // 初始化消息
+
+		Map<String, String> paramMap = mqModel.getParams();
+
+		QyWechatMsgModel qyMsgModel = new QyWechatMsgModel();
+		qyMsgModel.setTouser(paramMap.get("touser"));
+		qyMsgModel.setToparty(paramMap.get("toparty"));
+		qyMsgModel.setTotag(paramMap.get("totag"));
+		qyMsgModel.setMsgtype("text");
+		qyMsgModel.setAgentid(Integer.parseInt(paramMap.get("agentid")));
+		TextModel textModel = (TextModel) msgModel.getContent();
+		qyMsgModel.setText(textModel);
+
+		// 请求微信接口
+		String accessToken = redisUtil.get(QY_WECHAT_TOKEN);
+		String url = MessageFormat.format(QY_WECHATMSG_URL, accessToken);
+		String result = HttpClient.post(url, JSON.toJSONString(qyMsgModel));
+
+		JSONObject resultJson = JSON.parseObject(result);
+		if (resultJson.getInteger("errcode") == 0) {
+			logger.info("企业消息发送成功");
+		} else {
+			logger.info(resultJson.getString("errmsg"));
+		}
+
 	}
 
 	@Override

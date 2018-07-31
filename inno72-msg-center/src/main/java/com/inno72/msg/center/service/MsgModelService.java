@@ -146,4 +146,6 @@ public interface MsgModelService {
 	 */
 	Result<MsgModel> resend(String id);
 
+	void sendQyWechatMsg(MsgDTO mqModel);
+
 }
