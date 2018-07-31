@@ -48,6 +48,7 @@ import com.inno72.msg.center.MessageType;
 import com.inno72.msg.center.OsType;
 import com.inno72.msg.center.StateType;
 import com.inno72.msg.center.TransmissionTemplateType;
+import com.inno72.msg.center.config.QyWeChatProperties;
 import com.inno72.msg.center.model.LinkModel;
 import com.inno72.msg.center.model.MsgModel;
 import com.inno72.msg.center.model.MsgTemplateModel;
@@ -79,6 +80,8 @@ public class MsgModelServiceImpl implements MsgModelService {
 	MongoUtil mongoUtil;
 	@Resource
 	private IRedisUtil redisUtil;
+	@Resource
+	private QyWeChatProperties qyWeChatProperties;
 
 	@Autowired
 	ExceptionProperties exceptionProp;
@@ -91,8 +94,6 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	private static final String EXTERNAL_TOKEN_KEY = "WECHAT_TOKEN";
 	private static final String EXTERNAL_WECHAT_TEMPLATE_MSG_ID = "EXTERNAL_WECHAT_TEMPLATE_MSG_ID";
-	private static final String QY_WECHAT_TOKEN = "public:qyWeChatAccessToken";
-	private static final String QY_WECHATMSG_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
 
 	@Override
 	public void save(MsgModel msgModel) {
@@ -246,21 +247,34 @@ public class MsgModelServiceImpl implements MsgModelService {
 		 * }, "safe":0 }
 		 */
 		MsgModel msgModel = this.init(mqModel); // 初始化消息
+		// 设置content内容
+		MsgTemplateModel msgTemplateModel = msgModel.getModel();
 
-		Map<String, String> paramMap = mqModel.getParams();
+		TextModel textModel = (TextModel) msgTemplateModel.getContent();
+		logger.info("模板替换参数map：{}", mqModel.getParams());
+		mqModel.getParams().forEach((k, v) -> {
+			if (v != null) {
+				logger.info("参数{}设置值为{}", k, v);
+				textModel.setContent(textModel.getContent().replaceAll("\\{\\{" + k + "\\}\\}", v));
+			} else {
+				logger.error("参数{}的值为null，忽略替换", k);
+			}
+		});
 
+		String agentid = qyWeChatProperties.getProps().get("agentid");
 		QyWechatMsgModel qyMsgModel = new QyWechatMsgModel();
-		qyMsgModel.setTouser(paramMap.get("touser"));
-		qyMsgModel.setToparty(paramMap.get("toparty"));
-		qyMsgModel.setTotag(paramMap.get("totag"));
+		// qyMsgModel.setTouser(paramMap.get("touser"));
+		// qyMsgModel.setToparty(paramMap.get("toparty"));
+		qyMsgModel.setTouser(mqModel.getReceiver());
 		qyMsgModel.setMsgtype("text");
-		qyMsgModel.setAgentid(Integer.parseInt(paramMap.get("agentid")));
-		TextModel textModel = (TextModel) msgModel.getContent();
+		qyMsgModel.setAgentid(Integer.parseInt(agentid));
 		qyMsgModel.setText(textModel);
 
 		// 请求微信接口
-		String accessToken = redisUtil.get(QY_WECHAT_TOKEN);
-		String url = MessageFormat.format(QY_WECHATMSG_URL, accessToken);
+		String qyWeChatMsgSendUrl = qyWeChatProperties.getProps().get("qyWeChatMsgSendUrl");
+		String accessTokenKey = qyWeChatProperties.getProps().get("accessTokenKey");
+		String accessToken = redisUtil.get(accessTokenKey);
+		String url = MessageFormat.format(qyWeChatMsgSendUrl, accessToken);
 		String result = HttpClient.post(url, JSON.toJSONString(qyMsgModel));
 
 		JSONObject resultJson = JSON.parseObject(result);
