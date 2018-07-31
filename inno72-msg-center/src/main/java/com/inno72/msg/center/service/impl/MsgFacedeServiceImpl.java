@@ -74,6 +74,10 @@ public class MsgFacedeServiceImpl implements MsgFacedeService {
 			logger.info("发送微应用消息");
 			msgModelService.sendDingDingMiniApp(msg);
 			break;
+		case 8:// 企业微信
+			logger.info("发送企业微信消息");
+			msgModelService.sendQyWechatMsg(msg);
+			break;
 		default:
 			break;
 		}
