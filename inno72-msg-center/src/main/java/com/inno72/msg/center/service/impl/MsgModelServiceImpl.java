@@ -49,7 +49,6 @@ import com.inno72.msg.center.MessageType;
 import com.inno72.msg.center.OsType;
 import com.inno72.msg.center.StateType;
 import com.inno72.msg.center.TransmissionTemplateType;
-import com.inno72.msg.center.config.QyWeChatProperties;
 import com.inno72.msg.center.model.LinkModel;
 import com.inno72.msg.center.model.MsgModel;
 import com.inno72.msg.center.model.MsgTemplateModel;
@@ -82,7 +81,6 @@ public class MsgModelServiceImpl implements MsgModelService {
 	@Resource
 	private IRedisUtil redisUtil;
 	@Resource
-	private QyWeChatProperties qyWeChatProperties;
 
 	@Autowired
 	ExceptionProperties exceptionProp;

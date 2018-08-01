@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import com.inno72.config.client.SMSProperties;
-import com.inno72.msg.center.config.QyWeChatProperties;
 import com.inno72.springboot.web.SpringApplicationBuilder;
 import com.inno72.springboot.web.SpringBootServletInitializer;
 
@@ -15,7 +14,7 @@ import com.inno72.springboot.web.SpringBootServletInitializer;
  */
 @SpringBootApplication(scanBasePackages = { "com.inno72" })
 @EnableEurekaClient
-@EnableConfigurationProperties({ SMSProperties.class, QyWeChatProperties.class })
+@EnableConfigurationProperties({ SMSProperties.class })
 public class MsgCenterApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
