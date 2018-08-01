@@ -23,6 +23,10 @@ public class MsgDTO implements Serializable {
 	private Map<String, String> params;
 	private String sentBy; // 发送人
 	private String receiver; // 接受人：手机号或者openId或者设备号
+	/**
+	 * 所需其他参数
+	 */
+	private Map<String, String> addedParams;
 
 	private final String msgTimestamp = MQ_KEY_PREFIXX + System.currentTimeMillis();
 
