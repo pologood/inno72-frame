@@ -28,14 +28,18 @@ public class Test {
 
 		MsgDTO msg = new MsgDTO();
 		msg.setCode(code);
-		msg.setReceiver("GongZi.Jie|Hao");
+		msg.setReceiver("GongZi.Jie|Hao|WangXiuTing");
 		Map<String, String> m = new HashMap<>();
 		m.put("touser", "GongZi.Jie|Hao");
 		m.put("agentid", "1000002");
 		m.put("msgtype", "text");
 		m.put("text", "Hi,你好吗？");
-		msg.setParams(m);
-
+		msg.setAddedParams(m);
+		Map<String, String> m2 = new HashMap<>();
+		m2.put("localStr", "北京");
+		m2.put("machineCode", "1000002");
+		m2.put("text", "坏拉");
+		msg.setParams(m2);
 		Result<Object> result = facedeService.transmit(msg);
 		System.out.println(result.json());
 	}

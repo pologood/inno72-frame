@@ -251,22 +251,23 @@ public class MsgModelServiceImpl implements MsgModelService {
 		Map<String, String> paramMap = mqModel.getParams();
 
 		QyWechatMsgModel qyMsgModel = (QyWechatMsgModel) msgTemplateModel.getContent();
-
 		TextModel textModel = qyMsgModel.getText();
 
-		/*
-		 * logger.info("模板替换参数map：{}", mqModel.getParams());
-		 * paramMap.forEach((k, v) -> { if (v != null) {
-		 * logger.info("参数{}设置值为{}", k, v);
-		 * textModel.setContent(textModel.getContent().replaceAll("\\{\\{" + k +
-		 * "\\}\\}", v)); } else { logger.error("参数{}的值为null，忽略替换", k); } });
-		 */
-		textModel.setContent(paramMap.get("你好，"));
+		logger.info("模板替换参数map：{}", mqModel.getParams());
+		paramMap.forEach((k, v) -> {
+			if (v != null) {
+				logger.info("参数{}设置值为{}", k, v);
+				textModel.setContent(textModel.getContent().replaceAll("\\{\\{" + k + "\\}\\}", v));
+			} else {
+				logger.error("参数{}的值为null，忽略替换", k);
+			}
+		});
 
-		String touser = paramMap.get("touser");
-		String toparty = paramMap.get("toparty");
-		String totag = paramMap.get("totag");
-		String agentid = paramMap.get("agentid");
+		Map<String, String> addedParam = mqModel.getAddedParams();
+		String touser = addedParam.get("touser");
+		String toparty = addedParam.get("toparty");
+		String totag = addedParam.get("totag");
+		String agentid = addedParam.get("agentid");
 		if (StringUtil.notEmpty(touser))
 			qyMsgModel.setTouser(touser);
 		if (StringUtil.notEmpty(toparty))
