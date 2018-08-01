@@ -36,6 +36,7 @@ import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
 import com.inno72.common.datetime.LocalDateTimeUtil;
+import com.inno72.common.utils.StringUtil;
 import com.inno72.config.client.ExceptionProperties;
 import com.inno72.core.aop.WithOutAfterThrowingCut;
 import com.inno72.core.dto.MsgDTO;
@@ -94,6 +95,10 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	private static final String EXTERNAL_TOKEN_KEY = "WECHAT_TOKEN";
 	private static final String EXTERNAL_WECHAT_TEMPLATE_MSG_ID = "EXTERNAL_WECHAT_TEMPLATE_MSG_ID";
+
+	private static final String QY_WECHAT_SENDURL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
+
+	private static final String QY_WECHAT_ACCESSTOKEN = "public:qyWeChatAccessToken";
 
 	@Override
 	public void save(MsgModel msgModel) {
@@ -239,42 +244,44 @@ public class MsgModelServiceImpl implements MsgModelService {
 	public void sendQyWechatMsg(MsgDTO mqModel) {
 		logger.info("企业微信消息");
 
-		/*
-		 * { "touser" : "UserID1|UserID2|UserID3", "toparty" :
-		 * "PartyID1|PartyID2", "totag" : "TagID1 | TagID2", "msgtype" : "text",
-		 * "agentid" : 1, "text" : { "content" :
-		 * "你的快递已到，请携带工卡前往邮件中心领取。\n出发前可查看<a href=\"http://work.weixin.qq.com\">邮件中心视频实况</a>，聪明避开排队。"
-		 * }, "safe":0 }
-		 */
 		MsgModel msgModel = this.init(mqModel); // 初始化消息
 		// 设置content内容
 		MsgTemplateModel msgTemplateModel = msgModel.getModel();
 
-		TextModel textModel = (TextModel) msgTemplateModel.getContent();
-		logger.info("模板替换参数map：{}", mqModel.getParams());
-		mqModel.getParams().forEach((k, v) -> {
-			if (v != null) {
-				logger.info("参数{}设置值为{}", k, v);
-				textModel.setContent(textModel.getContent().replaceAll("\\{\\{" + k + "\\}\\}", v));
-			} else {
-				logger.error("参数{}的值为null，忽略替换", k);
-			}
-		});
+		Map<String, String> paramMap = mqModel.getParams();
 
-		String agentid = qyWeChatProperties.getProps().get("agentid");
-		QyWechatMsgModel qyMsgModel = new QyWechatMsgModel();
-		// qyMsgModel.setTouser(paramMap.get("touser"));
-		// qyMsgModel.setToparty(paramMap.get("toparty"));
-		qyMsgModel.setTouser(mqModel.getReceiver());
+		QyWechatMsgModel qyMsgModel = (QyWechatMsgModel) msgTemplateModel.getContent();
+
+		TextModel textModel = qyMsgModel.getText();
+
+		/*
+		 * logger.info("模板替换参数map：{}", mqModel.getParams());
+		 * paramMap.forEach((k, v) -> { if (v != null) {
+		 * logger.info("参数{}设置值为{}", k, v);
+		 * textModel.setContent(textModel.getContent().replaceAll("\\{\\{" + k +
+		 * "\\}\\}", v)); } else { logger.error("参数{}的值为null，忽略替换", k); } });
+		 */
+		textModel.setContent(paramMap.get("你好，"));
+
+		String touser = paramMap.get("touser");
+		String toparty = paramMap.get("toparty");
+		String totag = paramMap.get("totag");
+		String agentid = paramMap.get("agentid");
+		if (StringUtil.notEmpty(touser))
+			qyMsgModel.setTouser(touser);
+		if (StringUtil.notEmpty(toparty))
+			qyMsgModel.setTouser(toparty);
+		if (StringUtil.notEmpty(totag))
+			qyMsgModel.setTotag(totag);
+		if (StringUtil.notEmpty(agentid))
+			qyMsgModel.setAgentid(Integer.parseInt(agentid));
+
 		qyMsgModel.setMsgtype("text");
-		qyMsgModel.setAgentid(Integer.parseInt(agentid));
 		qyMsgModel.setText(textModel);
 
 		// 请求微信接口
-		String qyWeChatMsgSendUrl = qyWeChatProperties.getProps().get("qyWeChatMsgSendUrl");
-		String accessTokenKey = qyWeChatProperties.getProps().get("accessTokenKey");
-		String accessToken = redisUtil.get(accessTokenKey);
-		String url = MessageFormat.format(qyWeChatMsgSendUrl, accessToken);
+		String accessToken = redisUtil.get(QY_WECHAT_ACCESSTOKEN);
+		String url = MessageFormat.format(QY_WECHAT_SENDURL, accessToken);
 		String result = HttpClient.post(url, JSON.toJSONString(qyMsgModel));
 
 		JSONObject resultJson = JSON.parseObject(result);

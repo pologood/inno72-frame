@@ -3,7 +3,7 @@ package com.inno72.msg.center.model;
 import lombok.Data;
 
 @Data
-public class QyWechatMsgModel {
+public class QyWechatMsgModel extends AbstractMsgModel {
 
 	// 成员ID列表（消息接收者，多个接收者用‘|’分隔，最多支持1000个）。特殊情况：指定为@all，则向该企业应用的全部成员发送
 	private String touser;
