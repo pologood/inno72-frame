@@ -96,7 +96,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	private static final String QY_WECHAT_SENDURL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
 
-	private static final String QY_WECHAT_ACCESSTOKEN = "public:qyWeChatAccessToken";
+	private static final String QY_WECHAT_ACCESSTOKEN = "public:qyCheckAgentAccToken";
 
 	@Override
 	public void save(MsgModel msgModel) {
@@ -262,6 +262,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 		});
 
 		Map<String, String> addedParam = mqModel.getAddedParams();
+		logger.info("模板替换参数map：{}", addedParam);
 		String touser = addedParam.get("touser");
 		String toparty = addedParam.get("toparty");
 		String totag = addedParam.get("totag");
