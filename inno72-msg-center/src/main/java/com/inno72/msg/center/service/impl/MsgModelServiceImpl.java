@@ -462,28 +462,28 @@ public class MsgModelServiceImpl implements MsgModelService {
 			logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
 			template.setTransmissionContent(content);
 			logger.info("透传消息内容: {}", content);
-			result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
+			result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(),pushModel.getAppType());
 		} else if (pushModel.getTemplateType() == TransmissionTemplateType.NOTIFICATION_OPEN_APPLICATION.v()) {
 
-			logger.info("通知打开应用消息");
-			// IOS系统较事逼
-			if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
-				TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
-						pushModel.getTransmissionType(), pushModel.getSound());
-				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
-			} else {
-				NotificationTemplate template = new NotificationTemplate();
-				template.setTransmissionType(pushModel.getTransmissionType());
-				logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
-				template.setTransmissionContent(content);
-
-				logger.info("通知消息透传内容: {}", content);
-				logger.info("通知消息标题: {}", pushModel.getTitle());
-				logger.info("通知消息内容: {}", pushModel.getText());
-				template.setTitle(pushModel.getTitle());
-				template.setText(pushModel.getText());
-				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
-			}
+//			logger.info("通知打开应用消息");
+//			// IOS系统较事逼
+//			if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
+//				TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
+//						pushModel.getTransmissionType(), pushModel.getSound());
+//				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
+//			} else {
+//				NotificationTemplate template = new NotificationTemplate();
+//				template.setTransmissionType(pushModel.getTransmissionType());
+//				logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
+//				template.setTransmissionContent(content);
+//
+//				logger.info("通知消息透传内容: {}", content);
+//				logger.info("通知消息标题: {}", pushModel.getTitle());
+//				logger.info("通知消息内容: {}", pushModel.getText());
+//				template.setTitle(pushModel.getTitle());
+//				template.setText(pushModel.getText());
+//				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
+//			}
 		}
 
 		boolean status = result.get("result").toString().toLowerCase().equals("ok");
