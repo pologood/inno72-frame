@@ -26,7 +26,9 @@ public class GpushSendHandler {
 
 	Logger logger = LoggerFactory.getLogger(GpushSendHandler.class);
 
-	private IGtPush androidPush;
+	private IGtPush androidPushMachine;
+	
+	private IGtPush androidPushCheck;
 	// private IGtPush iosPush;
 	// private IGtPush proPush;
 
@@ -41,12 +43,11 @@ public class GpushSendHandler {
 
 	@PostConstruct
 	private void init() {
-		androidPush = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "5rOs0t4RQW7giCJY7uSPb9");
-		// iosPush = new IGtPush(host, ios.getAppkey(), ios.getAppsecret());
-		// proPush = new IGtPush(host, pro.getAppkey(), pro.getAppsecret());
+		androidPushMachine = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "5rOs0t4RQW7giCJY7uSPb9");
+		androidPushCheck= new IGtPush(host, "qPXgOKKzFkAxtUD5IhDLk2", "sqA0pWF3qU5rtlwWErbGg");
 	}
 
-	public Map<String, Object> single(String receiver, AbstractTemplate tpl, int osType) {
+	public Map<String, Object> single(String receiver, AbstractTemplate tpl, int osType,int appType) {
 		SingleMessage message = new SingleMessage();
 		message.setOffline(true);
 		// 离线有效时间，单位为毫秒，可选
@@ -57,7 +58,7 @@ public class GpushSendHandler {
 		Target target = new Target();
 		target.setAlias(receiver);
 		IPushResult ret = null;
-		IGtPush push = getPush(osType, tpl, target);
+		IGtPush push = getPush(osType, tpl, target,appType);
 		try {
 			ret = push.pushMessageToSingle(message, target);
 		} catch (RequestException e) {
@@ -72,28 +73,21 @@ public class GpushSendHandler {
 		return result;
 	}
 
-	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target) {
-		// if (osType == OsType.IOS.v()) {
-		// logger.info("苹果基础版消息");
-		// tpl.setAppId(ios.getAppid());
-		// tpl.setAppkey(ios.getAppkey());
-		// target.setAppId(ios.getAppid());
-		// return iosPush;
-		// } else if (osType == OsType.ANDRIOD.v()) {
-		logger.info("安卓版消息");
-		tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
-		tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
-		target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
-		return androidPush;
-		// } else if (osType == OsType.PRO.v()) {
-		// logger.info("苹果专业版消息");
-		// tpl.setAppId(pro.getAppid());
-		// tpl.setAppkey(pro.getAppkey());
-		// target.setAppId(pro.getAppid());
-		// return proPush;
-		// } else {
-		// return null;
-		// }
+	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target,int appType) {
+		if(appType==2){
+			logger.info("推送巡检消息");
+			tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
+			tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
+			target.setAppId("vxa494yf3Z7cb22lmvIxq2");
+			return androidPushMachine;
+		}else{
+			logger.info("推送机器消息");
+			tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+			tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
+			target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+			return androidPushMachine;
+		}
+		
 	}
 
 }

@@ -16,6 +16,8 @@ public class PushModel extends AbstractMsgModel {
 	private int templateType;
 
 	private int osType; // 系统类型 1为andriod 2为ios基础版 3为ios专业版
+	
+	private int appType;// 1 机器push 2 巡检push
 
 	/**
 	 * 通知消息的title
