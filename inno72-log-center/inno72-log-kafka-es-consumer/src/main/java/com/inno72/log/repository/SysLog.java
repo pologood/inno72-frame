@@ -1,10 +1,11 @@
 package com.inno72.log.repository;
 
 
-import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+
+import lombok.Data;
 
 @Data
 @Document(indexName = "inno72_dababase", type = "syslog")

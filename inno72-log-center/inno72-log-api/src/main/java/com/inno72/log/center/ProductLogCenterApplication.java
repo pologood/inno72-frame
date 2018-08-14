@@ -1,9 +1,10 @@
 package com.inno72.log.center;
 
-import com.inno72.springboot.web.SpringApplicationBuilder;
-import com.inno72.springboot.web.SpringBootServletInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+
+import com.inno72.springboot.web.SpringApplicationBuilder;
+import com.inno72.springboot.web.SpringBootServletInitializer;
 
 @SpringBootApplication(scanBasePackages = { "com.inno72" })
 @EnableEurekaClient

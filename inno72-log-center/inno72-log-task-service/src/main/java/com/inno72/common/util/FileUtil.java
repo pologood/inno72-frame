@@ -38,7 +38,7 @@ public class FileUtil {
 				LOGGER.info("文件路径不存在 {}", filePath);
 				return false;
 			}
-			OSSUtil.downloadFile( filePath, local0Path + filePath);
+			OSSUtil.downloadFile( filePath, localFile);
 			deCompress(localFile, localFile.substring(0, localFile.indexOf(".")));
 		} catch (Exception e) {
 			LOGGER.info("下载文件异常 {}, {}", filePath, e.getMessage());
@@ -175,7 +175,7 @@ public class FileUtil {
 		StringBuffer fullPath=new StringBuffer();
 		for (int i = 0; i < paths.length; i++) {
 			String name = paths[i];
-			if (name.indexOf(".zip") != -1) {
+			if (name.contains(".zip")) {
 				name = name.substring(0, name.indexOf("."));
 			}
 			fullPath.append(name).append("/");

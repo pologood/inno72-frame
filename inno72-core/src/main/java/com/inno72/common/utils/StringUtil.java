@@ -1,11 +1,11 @@
 package com.inno72.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 字符串处理工具类
@@ -288,5 +288,9 @@ public class StringUtil extends StringUtils {
 			}
 		}
 		return newKey.toString();
+	}
+
+	public static String getUUID(){
+		return UUID.randomUUID().toString().replace("-", "");
 	}
 }

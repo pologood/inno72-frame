@@ -1,24 +1,30 @@
 package com.inno72.flume;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.inno72.util.PropertiesUtil;
-import com.inno72.util.TopicEnum;
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
-import kafka.serializer.StringEncoder;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Properties;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.flume.*;
+import org.apache.flume.Channel;
+import org.apache.flume.Context;
+import org.apache.flume.Event;
+import org.apache.flume.EventDeliveryException;
+import org.apache.flume.Transaction;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Properties;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.inno72.util.PropertiesUtil;
+import com.inno72.util.TopicEnum;
+
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+import kafka.serializer.StringEncoder;
 
 @Component
 public class KafkaSink extends AbstractSink implements Configurable {
