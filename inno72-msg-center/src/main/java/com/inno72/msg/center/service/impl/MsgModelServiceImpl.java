@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.gexin.rp.sdk.base.payload.APNPayload;
-import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.inno72.common.Result;
 import com.inno72.common.Results;
@@ -46,7 +45,6 @@ import com.inno72.exception.ExceptionBuilder;
 import com.inno72.mongo.MongoUtil;
 import com.inno72.msg.center.MessageChildType;
 import com.inno72.msg.center.MessageType;
-import com.inno72.msg.center.OsType;
 import com.inno72.msg.center.StateType;
 import com.inno72.msg.center.TransmissionTemplateType;
 import com.inno72.msg.center.model.LinkModel;
@@ -58,6 +56,7 @@ import com.inno72.msg.center.model.TextModel;
 import com.inno72.msg.center.model.WechatTemplateMsgModel;
 import com.inno72.msg.center.service.MsgModelService;
 import com.inno72.msg.center.service.MsgTemplateModelService;
+import com.inno72.msg.center.util.EmailSendHandler;
 import com.inno72.msg.center.util.GpushSendHandler;
 import com.inno72.msg.center.util.SmsSendHandler;
 import com.inno72.plugin.http.HttpClient;
@@ -87,6 +86,9 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	@Autowired
 	private SmsSendHandler smsSendHandler;
+
+	@Autowired
+	private EmailSendHandler emailSendHandler;
 
 	@Autowired
 	private GpushSendHandler gpushSendHandler;
@@ -267,14 +269,10 @@ public class MsgModelServiceImpl implements MsgModelService {
 		String toparty = addedParam.get("toparty");
 		String totag = addedParam.get("totag");
 		String agentid = addedParam.get("agentid");
-		if (StringUtil.notEmpty(touser))
-			qyMsgModel.setTouser(touser);
-		if (StringUtil.notEmpty(toparty))
-			qyMsgModel.setTouser(toparty);
-		if (StringUtil.notEmpty(totag))
-			qyMsgModel.setTotag(totag);
-		if (StringUtil.notEmpty(agentid))
-			qyMsgModel.setAgentid(Integer.parseInt(agentid));
+		if (StringUtil.notEmpty(touser)) qyMsgModel.setTouser(touser);
+		if (StringUtil.notEmpty(toparty)) qyMsgModel.setTouser(toparty);
+		if (StringUtil.notEmpty(totag)) qyMsgModel.setTotag(totag);
+		if (StringUtil.notEmpty(agentid)) qyMsgModel.setAgentid(Integer.parseInt(agentid));
 
 		qyMsgModel.setMsgtype("text");
 		qyMsgModel.setText(textModel);
@@ -462,28 +460,29 @@ public class MsgModelServiceImpl implements MsgModelService {
 			logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
 			template.setTransmissionContent(content);
 			logger.info("透传消息内容: {}", content);
-			result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(),pushModel.getAppType());
+			result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(),
+					pushModel.getAppType());
 		} else if (pushModel.getTemplateType() == TransmissionTemplateType.NOTIFICATION_OPEN_APPLICATION.v()) {
 
-//			logger.info("通知打开应用消息");
-//			// IOS系统较事逼
-//			if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
-//				TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
-//						pushModel.getTransmissionType(), pushModel.getSound());
-//				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
-//			} else {
-//				NotificationTemplate template = new NotificationTemplate();
-//				template.setTransmissionType(pushModel.getTransmissionType());
-//				logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
-//				template.setTransmissionContent(content);
-//
-//				logger.info("通知消息透传内容: {}", content);
-//				logger.info("通知消息标题: {}", pushModel.getTitle());
-//				logger.info("通知消息内容: {}", pushModel.getText());
-//				template.setTitle(pushModel.getTitle());
-//				template.setText(pushModel.getText());
-//				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
-//			}
+			// logger.info("通知打开应用消息");
+			// // IOS系统较事逼
+			// if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
+			// TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
+			// pushModel.getTransmissionType(), pushModel.getSound());
+			// result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
+			// } else {
+			// NotificationTemplate template = new NotificationTemplate();
+			// template.setTransmissionType(pushModel.getTransmissionType());
+			// logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
+			// template.setTransmissionContent(content);
+			//
+			// logger.info("通知消息透传内容: {}", content);
+			// logger.info("通知消息标题: {}", pushModel.getTitle());
+			// logger.info("通知消息内容: {}", pushModel.getText());
+			// template.setTitle(pushModel.getTitle());
+			// template.setText(pushModel.getText());
+			// result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
+			// }
 		}
 
 		boolean status = result.get("result").toString().toLowerCase().equals("ok");
@@ -532,14 +531,21 @@ public class MsgModelServiceImpl implements MsgModelService {
 	public void sendMail(MsgModel msgModel) {
 		// 获取推送文本信息
 		TextModel textModel = (TextModel) msgModel.getContent();
-		String email = textModel.getContent();
-		// TODO 发送推送信息 sendByhttp
-
-		// TODO 根据发送短信的结果设置消息状态和消息文本
-		msgModel.setStatus(""); // TODO
-		msgModel.setStatusMessage(""); // TODO
+		String message = textModel.getContent();
+		// 发送邮件
+		logger.info("发送邮件: {}", message);
+		String result = emailSendHandler.sendSimpleMail(msgModel.getReceiver(), msgModel.getTitle(), message);
+		logger.info("邮件发送结果: {}", "success".equals(result) ? "成功" : "失败");
+		// 根据发送邮件的结果设置状态
+		msgModel.setStatus("success".equals(result) ? StateType.SUCCESS.getV() : StateType.FAILURE.getV());
+		msgModel.setStatusMessage("success".equals(result) ? "成功" : "失败");
+		msgModel.setResult(result);
 
 		this.save(msgModel);
+		if (!"success".equals(result)) {
+			throw ExceptionBuilder.build(exceptionProp).format("send_email_failed", msgModel.getId(), "邮件发送失败")
+					.create();
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -548,7 +554,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 		MsgModel msgModel = this.init(mqModel); // 初始化消息
 		// 设置content内容
 		MsgTemplateModel msgTemplateModel = msgModel.getModel();
-		TextModel textModel = (TextModel) msgModel.getContent();
+		TextModel textModel = (TextModel) msgTemplateModel.getContent();
 		logger.info("模板替换参数map：{}", mqModel.getParams());
 		mqModel.getParams().forEach((k, v) -> {
 			if (v != null) {
