@@ -30,11 +30,7 @@
             <artifactId>inno72-core</artifactId>
             <version>${frame.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.inno72</groupId>
-            <artifactId>inno72-log</artifactId>
-            <version>${frame.version}</version>
-        </dependency>
+
         <!-- frame -->
 
         <!-- plugin -->
@@ -131,6 +127,12 @@
                     <artifactId>bcpkix-jdk15on</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-log</artifactId>
+            <version>${frame.version}</version>
         </dependency>
 
     </dependencies>
