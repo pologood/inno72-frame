@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.common.utils.StringUtil;
-import com.inno72.log.util.FastJsonUtils;
 import com.inno72.log.util.TopicEnum;
 import com.inno72.log.vo.OtherLog;
 import com.inno72.log.vo.PointLog;
@@ -32,15 +31,14 @@ public class MessageConsumer {
 		OtherLog otherLog = JSON.parseObject(message, OtherLog.class);
 		LOGEGR.info("BIZ topic【{}】接受消息 【{}】",TopicEnum.BIZ.topic, JSON.toJSONString(otherLog));
 		// 获取日志是否具有指定类型，分别存储
-		String pointType = FastJsonUtils.getString(message, PointLog.POINT_TYPE);
-		if (StringUtil.isEmpty(pointType)){
-			mongoTpl.save(otherLog);
-		}else {
+		if (StringUtil.isNotEmpty(otherLog.getPlatform()) && otherLog.getPlatform().equals(PointLog.POINT_TYPE)){
 			PointLog pointLog = new PointLog();
 			BeanUtils.copyProperties(otherLog, pointLog);
 			pointLog.setMachineCode(otherLog.getInstanceName());
-			pointLog.setType(pointType);
+			pointLog.setType(otherLog.getOperatorId());
 			mongoTpl.save(pointLog, "PointLog");
+		}else {
+			mongoTpl.save(otherLog);
 		}
 
 

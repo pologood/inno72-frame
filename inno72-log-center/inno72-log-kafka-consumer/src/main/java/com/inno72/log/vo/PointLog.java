@@ -11,7 +11,7 @@ public class PointLog {
 	/**
 	 * kafka消费切点字段，如果POINT_TYPE有值则切到 PointLog.java 存储
 	 */
-	public static final String POINT_TYPE = "logType";
+	public static final String POINT_TYPE = "98u1fdvfuer2fw9iuebf1029e1";
 
 	/**
 	 * 机器CODE {@link OtherLog} -> instanceName
