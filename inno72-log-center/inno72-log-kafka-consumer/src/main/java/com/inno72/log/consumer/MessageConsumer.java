@@ -34,7 +34,6 @@ public class MessageConsumer {
 
 	@KafkaListener(topics = TopicEnum.POINT.topic)
 	public void onPointMessage(String message) {
-
 		PointLog pointLog = JSON.parseObject(message, PointLog.class);
 		LOGEGR.info("Point topic【{}】接受消息 【{}】",TopicEnum.BIZ.topic, JSON.toJSONString(pointLog));
 		// 获取日志是否具有指定类型，分别存储
