@@ -27,7 +27,7 @@ public class MessageConsumer {
 		PointLog pointLog = JSON.parseObject(message, PointLog.class);
 		LOGEGR.info("Point topic【{}】接受消息 【{}】",TopicEnum.POINT.topic, JSON.toJSONString(pointLog));
 		// 获取日志是否具有指定类型，分别存储
-		mongoTpl.save(pointLog, "PointLog");
+		mongoTpl.insert(pointLog, "PointLog");
 	}
 
 }
