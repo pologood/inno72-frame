@@ -34,6 +34,11 @@
         </dependency>
         <dependency>
             <groupId>com.inno72</groupId>
+            <artifactId>inno72-redis</artifactId>
+            <version>${inno72-plugin-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inno72</groupId>
             <artifactId>inno72-core</artifactId>
             <version>${inno72-frame-version}</version>
         </dependency>
