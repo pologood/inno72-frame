@@ -37,7 +37,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 			if (!v.contains("|")){
 				return v;
 			}
-			return v.split("|")[0];
+			return v.split("\\|")[0];
 		}).orElse("");
 
 		Query query = new Query();
@@ -54,7 +54,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					if (!v.contains("|")){
 						return v;
 					}
-					return v.split("|")[1];
+					return v.split("\\|")[1];
 				}).orElse("");
 				int newUv = addUv(machineCode, tag, userId, date);
 				update.inc("pv", 1);
@@ -68,7 +68,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					if (!v.contains("|")){
 						return v;
 					}
-					return v.split("|")[1];
+					return v.split("\\|")[1];
 				}).orElse("");
 				addShipment(machineCode, tag, shipmentId, date);
 
