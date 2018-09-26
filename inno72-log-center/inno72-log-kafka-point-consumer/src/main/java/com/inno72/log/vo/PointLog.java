@@ -13,6 +13,7 @@ public class PointLog {
 	 */
 	public static final String POINT_TYPE = "98u1fdvfuer2fw9iuebf1029e1";
 
+	public static final String POINT_TYPE_WARNING = "1";
 	public static final String POINT_TYPE_LOGIN = "31";
 	public static final String POINT_TYPE_ORDER = "32";
 	public static final String POINT_TYPE_FINISH = "33";

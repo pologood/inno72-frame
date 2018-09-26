@@ -34,6 +34,11 @@ public class MachineGoodsCount implements Serializable {
 	 */
 	private String goodsCode;
 	/**
+	 *String
+	 * 	否	商品名称
+	 */
+	private String goodsName;
+	/**
 	 *int
 	 * 	否	商品数量
 	 */

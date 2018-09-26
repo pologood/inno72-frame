@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.datetime.LocalDateUtil;
+import com.inno72.common.utils.StringUtil;
 import com.inno72.log.service.MachineDataCountService;
 import com.inno72.log.vo.MachineGoodsCount;
 import com.inno72.log.vo.PointLog;
@@ -41,7 +43,6 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 		}).orElse("");
 
 		Query query = new Query();
-		query.addCriteria(Criteria.where("activityId").is(tag));
 		query.addCriteria(Criteria.where("date").is(date));
 		query.addCriteria(Criteria.where("machineCode").is(machineCode));
 
@@ -57,10 +58,12 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					return v.split("\\|")[1];
 				}).orElse("");
 				int newUv = addUv(machineCode, tag, userId, date);
+				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("pv", 1);
 				update.set("uv", newUv);
 
 			case PointLog.POINT_TYPE_ORDER:
+				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("order", 1);
 
 			case PointLog.POINT_TYPE_FINISH:
@@ -70,11 +73,27 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					}
 					return v.split("\\|")[1];
 				}).orElse("");
-				addShipment(machineCode, tag, shipmentId, date);
+				String goodsName = Optional.of(pointLog.getTag()).map((v)->{
+					if (!v.contains("|")){
+						return v;
+					}
+					return v.split("\\|")[2];
+				}).orElse("");
+				addShipment(machineCode, tag, shipmentId, date, goodsName);
+				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("shipment", 1);
 
 			case PointLog.POINT_TYPE_FANS:
+				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("fans", 1);
+
+			case PointLog.POINT_TYPE_WARNING:
+				Optional.ofNullable(pointLog.getDetail()).map(Object::toString).orElse("");
+				String detail = pointLog.getDetail();
+				if (StringUtil.notEmpty(detail)){
+					String count = Optional.ofNullable(JSON.parseObject(detail).get("count")).map(Object::toString).orElse("");
+					update.inc("fans", Integer.parseInt(count));
+				}
 		}
 
 		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
@@ -95,7 +114,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 	}
 
 	//增加出货
-	private void addShipment(String machineCode, String activityId, String shipmentId, String date){
+	private void addShipment(String machineCode, String activityId, String shipmentId, String date, String goodsName){
 		Query query = new Query();
 		query.addCriteria(Criteria.where("time").is(date));
 		query.addCriteria(Criteria.where("activityId").is(activityId));
@@ -104,6 +123,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 
 		Update update = new Update();
 		update.inc("goods", 1);
+		update.set("goodsName", goodsName);
 		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true), MachineGoodsCount.class, "MachineGoodsCount");
 
 	}
