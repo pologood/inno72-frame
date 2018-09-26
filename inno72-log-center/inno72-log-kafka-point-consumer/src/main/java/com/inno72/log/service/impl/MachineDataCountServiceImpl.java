@@ -71,6 +71,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					return v.split("\\|")[1];
 				}).orElse("");
 				addShipment(machineCode, tag, shipmentId, date);
+				update.inc("shipment", 1);
 
 			case PointLog.POINT_TYPE_FANS:
 				update.inc("fans", 1);
@@ -97,7 +98,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 	private void addShipment(String machineCode, String activityId, String shipmentId, String date){
 		Query query = new Query();
 		query.addCriteria(Criteria.where("time").is(date));
-		query.addCriteria(Criteria.where(activityId));
+		query.addCriteria(Criteria.where("activityId").is(activityId));
 		query.addCriteria(Criteria.where("machineCode").is(machineCode));
 		query.addCriteria(Criteria.where("goodsCode").is(shipmentId));
 
