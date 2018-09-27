@@ -89,9 +89,8 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 
 			case PointLog.POINT_TYPE_WARNING:
 				Optional.ofNullable(pointLog.getDetail()).map(Object::toString).orElse("");
-				String detail = pointLog.getDetail();
-				if (StringUtil.notEmpty(detail)){
-					String count = Optional.ofNullable(JSON.parseObject(detail).get("count")).map(Object::toString).orElse("");
+				if (StringUtil.notEmpty(tag)){
+					String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
 					update.inc("fans", Integer.parseInt(count));
 				}
 		}
