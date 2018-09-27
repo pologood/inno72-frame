@@ -58,12 +58,12 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					return v.split("\\|")[1];
 				}).orElse("");
 				int newUv = addUv(machineCode, tag, userId, date);
-				query.addCriteria(Criteria.where("activityId").is(tag));
+//				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("pv", 1);
 				update.set("uv", newUv);
 				break;
 			case PointLog.POINT_TYPE_ORDER:
-				query.addCriteria(Criteria.where("activityId").is(tag));
+//				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("order", 1);
 				break;
 			case PointLog.POINT_TYPE_FINISH:
@@ -80,11 +80,11 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					return v.split("\\|")[2];
 				}).orElse("");
 				addShipment(machineCode, tag, shipmentId, date, goodsName);
-				query.addCriteria(Criteria.where("activityId").is(tag));
+//				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("shipment", 1);
 				break;
 			case PointLog.POINT_TYPE_FANS:
-				query.addCriteria(Criteria.where("activityId").is(tag));
+//				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("fans", 1);
 				break;
 			case PointLog.POINT_TYPE_WARNING:
