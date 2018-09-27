@@ -61,11 +61,11 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("pv", 1);
 				update.set("uv", newUv);
-
+				break;
 			case PointLog.POINT_TYPE_ORDER:
 				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("order", 1);
-
+				break;
 			case PointLog.POINT_TYPE_FINISH:
 				String shipmentId = Optional.of(pointLog.getTag()).map((v)->{
 					if (!v.contains("|")){
@@ -82,17 +82,18 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				addShipment(machineCode, tag, shipmentId, date, goodsName);
 				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("shipment", 1);
-
+				break;
 			case PointLog.POINT_TYPE_FANS:
 				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("fans", 1);
-
+				break;
 			case PointLog.POINT_TYPE_WARNING:
 				Optional.ofNullable(pointLog.getDetail()).map(Object::toString).orElse("");
 				if (StringUtil.notEmpty(tag)){
 					String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
 					update.inc("visitor", Integer.parseInt(count));
 				}
+				break;
 		}
 
 		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
