@@ -43,6 +43,14 @@ public class MachineGoodsCount implements Serializable {
 	 * 	否	商品数量
 	 */
 	private Integer goods;
+	/**
+	 * 会员数
+	 */
+	private Integer fans;
+	/**
+	 * 客流量
+	 */
+	private Integer visitor;
 
 	public MachineGoodsCount() {
 	}
