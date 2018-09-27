@@ -91,7 +91,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				Optional.ofNullable(pointLog.getDetail()).map(Object::toString).orElse("");
 				if (StringUtil.notEmpty(tag)){
 					String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
-					update.inc("fans", Integer.parseInt(count));
+					update.inc("visitor", Integer.parseInt(count));
 				}
 		}
 
