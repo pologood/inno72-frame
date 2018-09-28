@@ -35,26 +35,23 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 		String date = LocalDateUtil.transfer(LocalDate.now());
 
 		String machineCode = pointLog.getMachineCode();
-		String tag = Optional.of(pointLog.getTag()).map((v)->{
-			if (!v.contains("|")){
-				return v;
-			}
-			return v.split("\\|")[0];
-		}).orElse("");
-
+		String tag = pointLog.getTag();
 		Query query = new Query();
 		query.addCriteria(Criteria.where("date").is(date));
 		query.addCriteria(Criteria.where("machineCode").is(machineCode));
-
-		String type = pointLog.getType();
-		Update update = new Update();
-
-		String activityId = Optional.of(pointLog.getTag()).map((v)->{
+		String activityId = Optional.of(tag).map((v)->{
 			if (!v.contains("|")){
 				return v;
 			}
 			return v.split("\\|")[0];
 		}).orElse("");
+
+		String type = pointLog.getType();
+		if (!type.equals(PointLog.POINT_TYPE_WARNING)){
+			query.addCriteria(Criteria.where("activityId").is(activityId));
+		}
+
+		Update update = new Update();
 
 		switch (type){
 			case PointLog.POINT_TYPE_LOGIN:
@@ -65,7 +62,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					return v.split("\\|")[1];
 				}).orElse("");
 
-				int newUv = addUv(machineCode, tag, userId, date);
+				int newUv = addUv(machineCode, activityId, userId, date);
 				update.set("activityId", activityId);
 				update.inc("pv", 1);
 				update.set("uv", newUv);
@@ -86,18 +83,15 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					}
 					return v.split("\\|")[2];
 				}).orElse("");
-				this.addShipment(machineCode, tag, shipmentId, date, goodsName);
+				this.addShipment(machineCode, activityId, shipmentId, date, goodsName);
 				update.inc("shipment", 1);
 				break;
 			case PointLog.POINT_TYPE_FANS:
-				update.set("activityId", tag);
 				update.inc("fans", 1);
 				break;
 			case PointLog.POINT_TYPE_WARNING:
-				if (StringUtil.notEmpty(tag)){
-					String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
-					update.inc("visitor", Integer.parseInt(count));
-				}
+				String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
+				update.inc("visitor", Integer.parseInt(count));
 				break;
 		}
 
