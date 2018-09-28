@@ -17,6 +17,7 @@ import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.log.service.MachineDataCountService;
 import com.inno72.log.vo.MachineGoodsCount;
+import com.inno72.log.vo.MachineVisitorCount;
 import com.inno72.log.vo.PointLog;
 import com.inno72.redis.IRedisUtil;
 
@@ -66,9 +67,11 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				update.set("activityId", activityId);
 				update.inc("pv", 1);
 				update.set("uv", newUv);
+				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_ORDER:
 				update.inc("order", 1);
+				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_FINISH:
 				String shipmentId = Optional.of(pointLog.getTag()).map((v)->{
@@ -85,19 +88,28 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				}).orElse("");
 				this.addShipment(machineCode, activityId, shipmentId, date, goodsName);
 				update.inc("shipment", 1);
+				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_FANS:
 				update.inc("fans", 1);
+				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_WARNING:
 				String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
-				update.inc("visitor", Integer.parseInt(count));
+				this.addVisitor(date, machineCode, Integer.parseInt(count));
 				break;
 		}
-
-		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 	}
 
+	private void addVisitor(String date, String machineCode, int count){
+		Update update = new Update();
+		update.inc("visitor", count);
+
+		Query query = new Query();
+		query.addCriteria(Criteria.where("date").is(date));
+		query.addCriteria(Criteria.where("machineCode").is(machineCode));
+		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineVisitorCount.class,"MachineVisitorCount");
+	}
 	//增加用户量
 	private int addUv(String machineCode, String activityId, String userId, String date){
 		String  UV_REDIS_KEY = "machine_data_count:"+
