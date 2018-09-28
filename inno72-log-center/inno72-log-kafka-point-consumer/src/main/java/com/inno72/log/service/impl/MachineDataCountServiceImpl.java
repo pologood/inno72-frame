@@ -49,6 +49,13 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 		String type = pointLog.getType();
 		Update update = new Update();
 
+		String activityId = Optional.of(pointLog.getTag()).map((v)->{
+			if (!v.contains("|")){
+				return v;
+			}
+			return v.split("\\|")[0];
+		}).orElse("");
+
 		switch (type){
 			case PointLog.POINT_TYPE_LOGIN:
 				String userId = Optional.of(pointLog.getTag()).map((v)->{
@@ -57,13 +64,13 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					}
 					return v.split("\\|")[1];
 				}).orElse("");
+
 				int newUv = addUv(machineCode, tag, userId, date);
-//				query.addCriteria(Criteria.where("activityId").is(tag));
+				update.set("activityId", activityId);
 				update.inc("pv", 1);
 				update.set("uv", newUv);
 				break;
 			case PointLog.POINT_TYPE_ORDER:
-//				query.addCriteria(Criteria.where("activityId").is(tag));
 				update.inc("order", 1);
 				break;
 			case PointLog.POINT_TYPE_FINISH:
@@ -79,16 +86,14 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 					}
 					return v.split("\\|")[2];
 				}).orElse("");
-				addShipment(machineCode, tag, shipmentId, date, goodsName);
-//				query.addCriteria(Criteria.where("activityId").is(tag));
+				this.addShipment(machineCode, tag, shipmentId, date, goodsName);
 				update.inc("shipment", 1);
 				break;
 			case PointLog.POINT_TYPE_FANS:
-//				query.addCriteria(Criteria.where("activityId").is(tag));
+				update.set("activityId", tag);
 				update.inc("fans", 1);
 				break;
 			case PointLog.POINT_TYPE_WARNING:
-				Optional.ofNullable(pointLog.getDetail()).map(Object::toString).orElse("");
 				if (StringUtil.notEmpty(tag)){
 					String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
 					update.inc("visitor", Integer.parseInt(count));
