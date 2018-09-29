@@ -108,7 +108,7 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 
 	//增加用户量
 	private int addUv(String machineCode, String activityId, String userId, String date){
-		String  UV_REDIS_KEY = "machine_data_count:"+
+		String  UV_REDIS_KEY = CommonBean.REDIS_MACHINE_ACTIVITY_ID +
 				machineCode+":"+
 				date+":"+
 				activityId+":"
@@ -143,7 +143,10 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 	 * @return activityId
 	 */
 	private String getActivityId(String machineCode){
-		String machine_activity_key = CommonBean.REDIS_MACHINE_ACTIVITY_ID+machineCode;
+		String machine_activity_key = CommonBean.REDIS_MACHINE_ACTIVITY_ID
+				+
+				machineCode
+				+ "activity_id";
 		String activityId = redisUtil.get(machine_activity_key);
 		if (StringUtil.isEmpty(activityId)){
 			activityId = commonMapper.findActivityIdByMachineCode(machineCode);
