@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inno72.mapper.CommonMapper">
-    <select id="findActivityIdByMachineCode">
-        select activity_id from inno72_activity_plan
-        where id = (
-        select activity_plan_id from inno72_activity_plan_machine where machine_id =
-        (select id from inno72_machine where machine_code = #{machineCode}))
-        and is_delete = 0
+    <select id="findActivityIdByMachineCode" resultType="java.lang.String">
+        select i1.id from inno72_activity_plan i1
+        left join inno72_activity_plan_machine i2 on i1.id = i2.activity_plan_id
+        left join inno72_machine i3 on i3.id = i2.machine_id
+        where  i3.machine_code = #{machineCode}
+        and i1.is_delete = 0
+        and CURDATE() BETWEEN i1.start_time and i1.end_time
     </select>
 </mapper>
