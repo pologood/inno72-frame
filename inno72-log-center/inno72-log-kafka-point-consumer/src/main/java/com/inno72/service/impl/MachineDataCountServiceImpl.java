@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.common.utils.StringUtil;
 import com.inno72.util.CommonBean;
@@ -97,8 +98,8 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				update.inc("fans", 1);
 				break;
 			case PointLog.POINT_TYPE_WARNING:
-//				String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
-//				update.inc("visitor", Integer.parseInt(count));
+				String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
+				update.inc("visitor", Integer.parseInt(count));
 				break;
 		}
 
