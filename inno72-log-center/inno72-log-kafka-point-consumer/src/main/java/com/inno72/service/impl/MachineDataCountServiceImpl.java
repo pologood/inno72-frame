@@ -1,4 +1,4 @@
-package com.inno72.log.service.impl;
+package com.inno72.service.impl;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -12,14 +12,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.inno72.common.datetime.LocalDateUtil;
 import com.inno72.common.utils.StringUtil;
-import com.inno72.log.service.MachineDataCountService;
-import com.inno72.log.vo.MachineGoodsCount;
-import com.inno72.log.vo.MachineVisitorCount;
-import com.inno72.log.vo.PointLog;
+import com.inno72.util.CommonBean;
+import com.inno72.model.MachineGoodsCount;
+import com.inno72.model.PointLog;
+import com.inno72.mapper.CommonMapper;
 import com.inno72.redis.IRedisUtil;
+import com.inno72.service.MachineDataCountService;
 
 @Service
 public class MachineDataCountServiceImpl implements MachineDataCountService {
@@ -30,6 +30,9 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 	@Resource
 	private IRedisUtil redisUtil;
 
+	@Resource
+	private CommonMapper commonMapper;
+
 	@Override
 	public void countLog(PointLog pointLog) {
 
@@ -37,9 +40,11 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 
 		String machineCode = pointLog.getMachineCode();
 		String tag = pointLog.getTag();
+
 		Query query = new Query();
 		query.addCriteria(Criteria.where("date").is(date));
 		query.addCriteria(Criteria.where("machineCode").is(machineCode));
+
 		String activityId = Optional.of(tag).map((v)->{
 			if (!v.contains("|")){
 				return v;
@@ -47,10 +52,12 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 			return v.split("\\|")[0];
 		}).orElse("");
 
+
 		String type = pointLog.getType();
-		if (!type.equals(PointLog.POINT_TYPE_WARNING)){
-			query.addCriteria(Criteria.where("activityId").is(activityId));
+		if (type.equals(PointLog.POINT_TYPE_WARNING)){
+			activityId = getActivityId(machineCode);
 		}
+		query.addCriteria(Criteria.where("activityId").is(activityId));
 
 		Update update = new Update();
 
@@ -64,14 +71,11 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				}).orElse("");
 
 				int newUv = addUv(machineCode, activityId, userId, date);
-				update.set("activityId", activityId);
 				update.inc("pv", 1);
 				update.set("uv", newUv);
-				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_ORDER:
 				update.inc("order", 1);
-				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_FINISH:
 				String shipmentId = Optional.of(pointLog.getTag()).map((v)->{
@@ -88,28 +92,19 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				}).orElse("");
 				this.addShipment(machineCode, activityId, shipmentId, date, goodsName);
 				update.inc("shipment", 1);
-				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_FANS:
 				update.inc("fans", 1);
-				mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 				break;
 			case PointLog.POINT_TYPE_WARNING:
-				String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
-				this.addVisitor(date, machineCode, Integer.parseInt(count));
+//				String count = Optional.ofNullable(JSON.parseObject(tag).get("count")).map(Object::toString).orElse("");
+//				update.inc("visitor", Integer.parseInt(count));
 				break;
 		}
+
+		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineGoodsCount.class,"MachineDataCount");
 	}
 
-	private void addVisitor(String date, String machineCode, int count){
-		Update update = new Update();
-		update.inc("visitor", count);
-
-		Query query = new Query();
-		query.addCriteria(Criteria.where("date").is(date));
-		query.addCriteria(Criteria.where("machineCode").is(machineCode));
-		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true),MachineVisitorCount.class,"MachineVisitorCount");
-	}
 	//增加用户量
 	private int addUv(String machineCode, String activityId, String userId, String date){
 		String  UV_REDIS_KEY = "machine_data_count:"+
@@ -137,5 +132,25 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 		update.set("goodsName", goodsName);
 		mongoTpl.findAndModify(query, update, FindAndModifyOptions.options().upsert(true), MachineGoodsCount.class, "MachineGoodsCount");
 
+	}
+
+	/**
+	 * 通过machineCode查询活动ID， 机器可能没有活动 ！！！
+	 * 没有活动的情况下返回 「-1」 表示没有活动
+	 * 该活动ID缓存 10分钟失效，失效后重新刷新活动ID
+	 * @param machineCode 机器code
+	 * @return activityId
+	 */
+	private String getActivityId(String machineCode){
+		String machine_activity_key = CommonBean.REDIS_MACHINE_ACTIVITY_ID+machineCode;
+		String activityId = redisUtil.get(machine_activity_key);
+		if (StringUtil.isEmpty(activityId)){
+			activityId = commonMapper.findActivityIdByMachineCode(machineCode);
+			if ( StringUtil.isEmpty(activityId) ){
+				activityId = "-1";
+			}
+			redisUtil.setex(machine_activity_key, 60 * 10, activityId);
+		}
+		return activityId;
 	}
 }

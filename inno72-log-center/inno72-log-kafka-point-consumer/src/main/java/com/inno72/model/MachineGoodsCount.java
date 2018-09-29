@@ -1,4 +1,4 @@
-package com.inno72.log.vo;
+package com.inno72.model;
 
 
 import java.io.Serializable;

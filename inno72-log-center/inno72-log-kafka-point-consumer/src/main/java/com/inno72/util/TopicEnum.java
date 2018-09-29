@@ -1,4 +1,4 @@
-package com.inno72.log.util;
+package com.inno72.util;
 
 public class TopicEnum {
 
