@@ -1,5 +1,10 @@
 package com.inno72.log.consumer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +22,20 @@ import com.inno72.log.util.TopicEnum;
 @Service
 public class MessageConsumer {
 
-    private static Logger LOGEGR = LoggerFactory.getLogger(MessageConsumer.class);
+	private static Logger LOGEGR = LoggerFactory.getLogger(MessageConsumer.class);
 
-    @Autowired
-    private SysLogRepository sysLogRepository;
+	@Resource
+	private SysLogRepository sysLogRepository;
 
-    @KafkaListener(topics = TopicEnum.SYS.topic)
-    public void onSysMessage(String message) {
-		SysLog sysLog = JSON.parseObject(message, SysLog.class);
-		LOGEGR.info("SYS topic【{}】接受消息 【{}】",TopicEnum.SYS.topic ,JSON.toJSONString(sysLog));
-		SysLog save = sysLogRepository.save(sysLog);
-		LOGEGR.info("SYS 消费结果 ===> ", JSON.toJSONString(save));
-    }
+	@KafkaListener(topics = TopicEnum.SYS.topic, containerFactory = "batchFactory")
+	public void onSysMessage(List<String> message) {
+		LOGEGR.info("************************************ {} ************************************", message.size());
+		List<SysLog> sysLogs = new ArrayList<>();
+		for (String msg : message){
+			sysLogs.add(JSON.parseObject(msg, SysLog.class));
+		}
+		Iterable<SysLog> save = sysLogRepository.save(sysLogs);
+		LOGEGR.info("SYS topic【{}】消费结果 ===> {}",TopicEnum.SYS.topic , JSON.toJSONString(save));
+
+	}
 }

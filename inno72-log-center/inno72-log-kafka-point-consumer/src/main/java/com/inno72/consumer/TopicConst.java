@@ -1,4 +1,4 @@
-package com.inno72.log.consumer;
+package com.inno72.consumer;
 
 /**
  * 类的功能描述：

@@ -1,4 +1,4 @@
-package com.inno72.log.consumer;
+package com.inno72.consumer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +11,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.inno72.log.service.MachineDataCountService;
-import com.inno72.log.util.TopicEnum;
-import com.inno72.log.vo.PointLog;
+import com.inno72.common.utils.StringUtil;
+import com.inno72.service.MachineDataCountService;
+import com.inno72.util.TopicEnum;
+import com.inno72.model.PointLog;
 
-import tk.mybatis.mapper.util.StringUtil;
 
 /**
  * 消费日志消息

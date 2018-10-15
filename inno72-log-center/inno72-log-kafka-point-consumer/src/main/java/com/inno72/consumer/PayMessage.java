@@ -1,4 +1,4 @@
-package com.inno72.log.consumer;
+package com.inno72.consumer;
 
 import lombok.Getter;
 import lombok.Setter;

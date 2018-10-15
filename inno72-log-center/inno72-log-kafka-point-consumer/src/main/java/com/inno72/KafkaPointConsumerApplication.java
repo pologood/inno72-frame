@@ -1,4 +1,4 @@
-package com.inno72.log;
+package com.inno72;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;

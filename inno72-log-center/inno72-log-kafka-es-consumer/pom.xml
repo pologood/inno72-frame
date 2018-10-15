@@ -38,6 +38,11 @@
             <version>${inno72-plugin-version}</version>
         </dependency>
         <dependency>
+            <groupId>com.inno72</groupId>
+            <artifactId>inno72-kafka</artifactId>
+            <version>${inno72-plugin-version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>

@@ -1,4 +1,4 @@
-package com.inno72.log.vo;
+package com.inno72.model;
 
 import lombok.Data;
 
@@ -16,12 +16,11 @@ public class PointLog {
 	public static final String POINT_TYPE_WARNING = "1";
 	public static final String POINT_TYPE_LOGIN = "31";
 	public static final String POINT_TYPE_ORDER = "32";
+	public static final String POINT_TYPE_COUPON_ORDER = "35";
 	public static final String POINT_TYPE_FINISH = "33";
 	public static final String POINT_TYPE_FANS = "34";
 
 	/**
-	 * 机器CODE {@link OtherLog} -> instanceName
-	 *
 	 */
 	private String machineCode;
 	/**
@@ -29,15 +28,12 @@ public class PointLog {
 	 */
 	private String type;
 	/**
-	 * 埋点时间{@link OtherLog} -> time
 	 */
 	private String pointTime;
 	/**
-	 * 标记{@link OtherLog} -> tag
 	 */
 	private String tag;
 	/**
-	 * 详情描述{@link OtherLog} -> detail
 	 */
 	private String detail;
 
