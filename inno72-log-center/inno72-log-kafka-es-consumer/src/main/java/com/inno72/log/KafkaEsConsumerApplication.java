@@ -20,4 +20,5 @@ public class KafkaEsConsumerApplication extends SpringBootServletInitializer {
 	public String setAppNameForLog() {
 		return "inn72-kafka-es-consumer-service";
 	}
+
 }
