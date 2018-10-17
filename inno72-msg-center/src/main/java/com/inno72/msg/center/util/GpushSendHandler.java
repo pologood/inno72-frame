@@ -29,6 +29,8 @@ public class GpushSendHandler {
 	private IGtPush androidPushMachine;
 	
 	private IGtPush androidPushCheck;
+	
+	private IGtPush androidPushTmMachine;
 	// private IGtPush iosPush;
 	// private IGtPush proPush;
 
@@ -45,6 +47,8 @@ public class GpushSendHandler {
 	private void init() {
 		androidPushMachine = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "5rOs0t4RQW7giCJY7uSPb9");
 		androidPushCheck= new IGtPush(host, "qPXgOKKzFkAxtUD5IhDLk2", "sqA0pWF3qU5rtlwWErbGg");
+		androidPushTmMachine= new IGtPush(host, "Z8Yd2w8Vgg8wWVOQA9FuL", "zHNltW4k9D9wVU1OKjWwD9");
+
 	}
 
 	public Map<String, Object> single(String receiver, AbstractTemplate tpl, int osType,int appType) {
@@ -79,7 +83,13 @@ public class GpushSendHandler {
 			tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
 			tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
 			target.setAppId("vxa494yf3Z7cb22lmvIxq2");
-			return androidPushMachine;
+			return androidPushCheck;
+		}if(appType==3){
+			logger.info("推送天猫消息");
+			tpl.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
+			tpl.setAppkey("Z8Yd2w8Vgg8wWVOQA9FuL");
+			target.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
+			return androidPushTmMachine;
 		}else{
 			logger.info("推送机器消息");
 			tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
