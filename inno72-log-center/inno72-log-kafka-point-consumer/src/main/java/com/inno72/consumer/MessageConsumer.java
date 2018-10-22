@@ -31,7 +31,7 @@ public class MessageConsumer {
 	@Autowired
 	private MachineDataCountService machineDataCountService;
 
-	private static final List<String> countSet = Arrays.asList("31", "32", "33", "34","1");
+	private static final List<String> countSet = Arrays.asList("31", "32", "33", "34","1","36");
 
 	@KafkaListener(topics = TopicEnum.POINT.topic)
 	public void onPointMessage(String message) {

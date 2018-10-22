@@ -75,8 +75,11 @@ public class MachineDataCountServiceImpl implements MachineDataCountService {
 				update.inc("pv", 1);
 				update.set("uv", newUv);
 				break;
-			case PointLog.POINT_TYPE_ORDER:
+			case PointLog.POINT_TYPE_GOODS_ORDER:
 				update.inc("order", 1);
+				break;
+			case PointLog.POINT_TYPE_CONCERN:
+				update.inc("concern", 1);
 				break;
 			case PointLog.POINT_TYPE_FINISH:
 				String shipmentId = Optional.of(pointLog.getTag()).map((v)->{

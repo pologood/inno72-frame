@@ -15,10 +15,11 @@ public class PointLog {
 
 	public static final String POINT_TYPE_WARNING = "1";
 	public static final String POINT_TYPE_LOGIN = "31";
-	public static final String POINT_TYPE_ORDER = "32";
+	public static final String POINT_TYPE_GOODS_ORDER = "32";
 	public static final String POINT_TYPE_COUPON_ORDER = "35";
 	public static final String POINT_TYPE_FINISH = "33";
 	public static final String POINT_TYPE_FANS = "34";
+	public static final String POINT_TYPE_CONCERN = "36";
 
 	/**
 	 */
