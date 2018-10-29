@@ -55,6 +55,7 @@ public class DBConfig {
 		datasource.setValidationQueryTimeout( 1000 * 10 );
 		datasource.setTimeBetweenEvictionRunsMillis( 5 * 1000 );
 		datasource.setMinEvictableIdleTimeMillis( 5 * 1000 );
+		datasource.setMaxActive(20);
 		// 过添加滤器
 		Slf4jLogFilter logFilter = new Slf4jLogFilter();
 		logger.info("配置DruidDataSource logFilter: statementLogEnabled=false");

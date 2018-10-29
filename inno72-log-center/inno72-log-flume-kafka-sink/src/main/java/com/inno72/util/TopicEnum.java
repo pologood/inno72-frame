@@ -5,6 +5,7 @@ public enum TopicEnum {
 	SYS("sys", "log-sys" ,"系统日志"),
 	PRODUCT("product", "log-other" ,"产品日志"),
 	BIZ("biz", "log-other" ,"业务日志"),
+	POINT("point", "log-point" ,"埋点日志"),
 	;
 
 	private String logType;

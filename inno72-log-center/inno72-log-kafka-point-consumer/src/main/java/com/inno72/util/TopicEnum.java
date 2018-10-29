@@ -1,4 +1,4 @@
-package com.inno72.log.util;
+package com.inno72.util;
 
 public class TopicEnum {
 
@@ -16,6 +16,11 @@ public class TopicEnum {
 		public static final String logType = "biz";
 		public static final String topic = "log-other";
 		public static final String info = "业务日志";
+	}
+	public static class POINT{//mongodb
+		public static final String logType = "point";
+		public static final String topic = "log-point";
+		public static final String info = "机器埋点日志";
 	}
 
 }
