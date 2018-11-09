@@ -1,11 +1,19 @@
 package com.inno72.msg.center.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.gexin.rp.sdk.base.impl.AppMessage;
+import com.gexin.rp.sdk.base.uitls.AppConditions;
+import com.gexin.rp.sdk.template.TransmissionTemplate;
+import com.inno72.msg.center.OsType;
+import com.inno72.msg.center.config.GetuiIOSProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.gexin.rp.sdk.base.IPushResult;
@@ -31,13 +39,14 @@ public class GpushSendHandler {
 	private IGtPush androidPushCheck;
 	
 	private IGtPush androidPushTmMachine;
-	// private IGtPush iosPush;
+
+	private IGtPush iosPush;
 	// private IGtPush proPush;
 
 	// @Autowired
 	// GetuiAndroidProperties android;
-	// @Autowired
-	// GetuiIOSProperties ios;
+	 @Autowired
+	GetuiIOSProperties ios;
 	// @Autowired
 	// GetuiProProperties pro;
 
@@ -77,27 +86,67 @@ public class GpushSendHandler {
 		return result;
 	}
 
-	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target,int appType) {
-		if(appType==2){
-			logger.info("推送巡检消息");
-			tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
-			tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
-			target.setAppId("vxa494yf3Z7cb22lmvIxq2");
-			return androidPushCheck;
-		}if(appType==3){
-			logger.info("推送天猫消息");
-			tpl.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
-			tpl.setAppkey("Z8Yd2w8Vgg8wWVOQA9FuL");
-			target.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
-			return androidPushTmMachine;
-		}else{
-			logger.info("推送机器消息");
-			tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
-			tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
-			target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
-			return androidPushMachine;
+	/**
+	 * 按标签发送
+	 * @param tpl
+	 * @param osType
+	 * @param appType
+	 * @param tagList
+	 * @return
+	 */
+	public Map<String, Object> tag(AbstractTemplate tpl, int osType,int appType, List tagList) {
+		AppMessage message = new AppMessage();
+		message.setData(tpl);
+		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
+		AppConditions cdt = new AppConditions();
+		cdt.addCondition(AppConditions.TAG,tagList);
+		message.setConditions(cdt);
+		String taskGroupName = "";
+		IGtPush push = getPush(osType, tpl, null,appType);
+
+		IPushResult ret = null;
+		try {
+			ret = push.pushMessageToApp(message,taskGroupName);
+		} catch (RequestException e) {
+			e.printStackTrace();
+			logger.error("发送失败，准备重试");
+			ret = push.pushMessageToApp(message,taskGroupName);
 		}
-		
+
+		Map<String, Object> result = ret.getResponse();
+		logger.info("推送结果: {}", result);
+		return result;
+	}
+
+	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target,int appType) {
+		logger.info("osType {}, appType {}", osType, appType);
+		if (osType == OsType.IOS.v()) {
+			logger.info("苹果普通消息");
+			tpl.setAppId(ios.getAppid());
+			tpl.setAppkey(ios.getAppkey());
+			return iosPush;
+		} else if (osType == OsType.ANDRIOD.v()) {
+			if(appType==2){
+				logger.info("推送巡检消息");
+				tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
+				tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
+				target.setAppId("vxa494yf3Z7cb22lmvIxq2");
+				return androidPushCheck;
+			}if(appType==3){
+				logger.info("推送天猫消息");
+				tpl.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
+				tpl.setAppkey("Z8Yd2w8Vgg8wWVOQA9FuL");
+				target.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
+				return androidPushTmMachine;
+			}else{
+				logger.info("推送机器消息");
+				tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+				tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
+				target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+				return androidPushMachine;
+			}
+		}
+		return null;
 	}
 
 }
