@@ -100,6 +100,9 @@ public class GpushSendHandler {
 		message.setData(tpl);
 		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
 		AppConditions cdt = new AppConditions();
+		List<String> appIdList = new ArrayList<String>();
+		appIdList.add("vxa494yf3Z7cb22lmvIxq2");
+		message.setAppIdList(appIdList);
 		cdt.addCondition(AppConditions.TAG,tagList);
 		message.setConditions(cdt);
 		String taskGroupName = "";
