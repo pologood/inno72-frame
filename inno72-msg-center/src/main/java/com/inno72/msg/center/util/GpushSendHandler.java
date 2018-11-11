@@ -55,9 +55,9 @@ public class GpushSendHandler {
 	@PostConstruct
 	private void init() {
 		androidPushMachine = new IGtPush(host, "q2P7jwmp9R97B1Misnf5y6", "5rOs0t4RQW7giCJY7uSPb9");
-		androidPushCheck= new IGtPush(host, "qPXgOKKzFkAxtUD5IhDLk2", "sqA0pWF3qU5rtlwWErbGg");
-		androidPushTmMachine= new IGtPush(host, "Z8Yd2w8Vgg8wWVOQA9FuL", "zHNltW4k9D9wVU1OKjWwD9");
-
+		androidPushCheck = new IGtPush(host, "qPXgOKKzFkAxtUD5IhDLk2", "sqA0pWF3qU5rtlwWErbGg");
+		androidPushTmMachine = new IGtPush(host, "Z8Yd2w8Vgg8wWVOQA9FuL", "zHNltW4k9D9wVU1OKjWwD9");
+		iosPush = new IGtPush(host, "qPXgOKKzFkAxtUD5IhDLk2", "sqA0pWF3qU5rtlwWErbGg");
 	}
 
 	public Map<String, Object> single(String receiver, AbstractTemplate tpl, int osType,int appType) {
