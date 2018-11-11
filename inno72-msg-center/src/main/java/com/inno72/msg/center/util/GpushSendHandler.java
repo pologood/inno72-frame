@@ -123,8 +123,10 @@ public class GpushSendHandler {
 		logger.info("osType {}, appType {}", osType, appType);
 		if (osType == OsType.IOS.v()) {
 			logger.info("苹果普通消息");
-			tpl.setAppId(ios.getAppid());
-			tpl.setAppkey(ios.getAppkey());
+			tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
+			tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
+//			tpl.setAppId(ios.getAppid());
+//			tpl.setAppkey(ios.getAppkey());
 			return iosPush;
 		} else if (osType == OsType.ANDRIOD.v()) {
 			if(appType==2){
