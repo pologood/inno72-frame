@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gexin.rp.sdk.base.impl.AppMessage;
 import com.gexin.rp.sdk.base.uitls.AppConditions;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
@@ -95,18 +96,21 @@ public class GpushSendHandler {
 	 * @return
 	 */
 	public Map<String, Object> tag(AbstractTemplate tpl, int osType,int appType, List tagList) {
-		logger.info("tag");
-		tagList = new ArrayList();
-		tagList.add("18911820367");
 		String appId = "vxa494yf3Z7cb22lmvIxq2";
 		String appKey = "qPXgOKKzFkAxtUD5IhDLk2";
 		String masterSecret = "sqA0pWF3qU5rtlwWErbGg";
+		String host = "http://sdk.open.api.igexin.com/apiex.htm";
+
 		IGtPush push = new IGtPush(host, appKey, masterSecret);
 		TransmissionTemplate transmissionTemplate = new TransmissionTemplate();
 		transmissionTemplate.setTransmissionType(2);
 		transmissionTemplate.setAppId(appId);
 		transmissionTemplate.setAppkey(appKey);
-		transmissionTemplate.setTransmissionContent("test");
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("id","12345");
+		jsonObject.put("title","报警消息");
+		jsonObject.put("content","消息详情");
+		transmissionTemplate.setTransmissionContent(jsonObject.toJSONString());
 		AppMessage message = new AppMessage();
 		message.setData(transmissionTemplate);
 		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
@@ -114,13 +118,16 @@ public class GpushSendHandler {
 		List<String> appIdList = new ArrayList<String>();
 		appIdList.add(appId);
 		message.setAppIdList(appIdList);
+		//⼿手机类型
+		tagList = new ArrayList<String>();
+		tagList.add("18911820367");
 		cdt.addCondition(AppConditions.TAG,tagList);
 		message.setConditions(cdt);
-		IPushResult ret = push.pushMessageToApp(message,"checkapp");
+		IPushResult ret = push.pushMessageToApp(message,"CheckAppMessage_toApp");
 		System.out.println(ret.getResponse().toString());
 		Map<String, Object> result = ret.getResponse();
 
-//		logger.info("osType {}, appType {}, tagList {}", osType, appType, tagList);
+		//		logger.info("osType {}, appType {}, tagList {}", osType, appType, tagList);
 //		AppMessage message = new AppMessage();
 //		message.setData(tpl);
 //		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
