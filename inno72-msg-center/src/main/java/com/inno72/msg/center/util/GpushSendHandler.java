@@ -35,7 +35,7 @@ public class GpushSendHandler {
 	Logger logger = LoggerFactory.getLogger(GpushSendHandler.class);
 
 	private IGtPush androidPushMachine;
-	
+
 	private IGtPush androidPushCheck;
 	
 	private IGtPush androidPushTmMachine;
@@ -71,7 +71,7 @@ public class GpushSendHandler {
 		Target target = new Target();
 		target.setAlias(receiver);
 		IPushResult ret = null;
-		IGtPush push = getPush(osType, tpl, target,appType);
+		IGtPush push = getPush(osType, tpl, target,appType, false);
 		try {
 			ret = push.pushMessageToSingle(message, target);
 		} catch (RequestException e) {
@@ -101,12 +101,13 @@ public class GpushSendHandler {
 		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
 		AppConditions cdt = new AppConditions();
 		List<String> appIdList = new ArrayList<String>();
-		appIdList.add("vxa494yf3Z7cb22lmvIxq2");
+//		appIdList.add("vxa494yf3Z7cb22lmvIxq2");
+		appIdList.add("VOcpBv3ote8PCHDwqjNgb2");
 		message.setAppIdList(appIdList);
 		cdt.addCondition(AppConditions.TAG,tagList);
 		message.setConditions(cdt);
 		String taskGroupName = "";
-		IGtPush push = getPush(osType, tpl, null,appType);
+		IGtPush push = getPush(osType, tpl, null,appType, true);
 
 		IPushResult ret = null;
 		try {
@@ -122,7 +123,7 @@ public class GpushSendHandler {
 		return result;
 	}
 
-	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target,int appType) {
+	private IGtPush getPush(int osType, AbstractTemplate tpl, Target target,int appType, boolean isTag) {
 		logger.info("osType {}, appType {}", osType, appType);
 		if (osType == OsType.IOS.v()) {
 			logger.info("苹果普通消息");
@@ -136,19 +137,25 @@ public class GpushSendHandler {
 				logger.info("推送巡检消息");
 				tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
 				tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
-				target.setAppId("vxa494yf3Z7cb22lmvIxq2");
+				if (!isTag) {
+					target.setAppId("vxa494yf3Z7cb22lmvIxq2");
+				}
 				return androidPushCheck;
 			}if(appType==3){
 				logger.info("推送天猫消息");
 				tpl.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
 				tpl.setAppkey("Z8Yd2w8Vgg8wWVOQA9FuL");
-				target.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
+				if (!isTag) {
+					target.setAppId("tqSDQPAvXB7eNqPZyuuCo8");
+				}
 				return androidPushTmMachine;
 			}else{
 				logger.info("推送机器消息");
 				tpl.setAppId("VOcpBv3ote8PCHDwqjNgb2");
 				tpl.setAppkey("q2P7jwmp9R97B1Misnf5y6");
-				target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+				if (!isTag) {
+					target.setAppId("VOcpBv3ote8PCHDwqjNgb2");
+				}
 				return androidPushMachine;
 			}
 		}
