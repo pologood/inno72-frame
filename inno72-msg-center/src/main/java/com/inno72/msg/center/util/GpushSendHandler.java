@@ -96,7 +96,7 @@ public class GpushSendHandler {
 	 */
 	public Map<String, Object> tag(AbstractTemplate tpl, int osType,int appType, List tagList) {
 		logger.info("tag");
-
+		tagList.add("18911820367");
 		String appId = "vxa494yf3Z7cb22lmvIxq2";
 		String appKey = "qPXgOKKzFkAxtUD5IhDLk2";
 		String masterSecret = "sqA0pWF3qU5rtlwWErbGg";
