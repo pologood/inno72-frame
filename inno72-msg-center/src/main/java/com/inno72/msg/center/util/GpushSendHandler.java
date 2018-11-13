@@ -101,7 +101,6 @@ public class GpushSendHandler {
 		message.setOffline(true); //离线有效时间，单位为毫秒，可选 message.setOfflineExpireTime(24 * 1000 * 3600); //推送给App的⽬目标⽤用户需要满⾜足的条件
 		AppConditions cdt = new AppConditions();
 		List<String> appIdList = new ArrayList<String>();
-//		appIdList.add("vxa494yf3Z7cb22lmvIxq2");
 		appIdList.add("vxa494yf3Z7cb22lmvIxq2");
 		message.setAppIdList(appIdList);
 		cdt.addCondition(AppConditions.TAG,tagList);
@@ -111,7 +110,7 @@ public class GpushSendHandler {
 
 		IPushResult ret = null;
 		try {
-			ret = push.pushMessageToApp(message,"checkapp");
+			ret = push.pushMessageToApp(message,"");
 		} catch (RequestException e) {
 			e.printStackTrace();
 			logger.error("发送失败，准备重试");
@@ -129,8 +128,6 @@ public class GpushSendHandler {
 			logger.info("苹果普通消息");
 			tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
 			tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
-//			tpl.setAppId(ios.getAppid());
-//			tpl.setAppkey(ios.getAppkey());
 			return iosPush;
 		} else if (osType == OsType.ANDRIOD.v()) {
 			if(appType==2){
