@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import com.inno72.msg.center.*;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -43,10 +44,6 @@ import com.inno72.ddtalk.chat.CorpChatHandler;
 import com.inno72.ddtalk.chat.GroupChatHandler;
 import com.inno72.exception.ExceptionBuilder;
 import com.inno72.mongo.MongoUtil;
-import com.inno72.msg.center.MessageChildType;
-import com.inno72.msg.center.MessageType;
-import com.inno72.msg.center.StateType;
-import com.inno72.msg.center.TransmissionTemplateType;
 import com.inno72.msg.center.model.LinkModel;
 import com.inno72.msg.center.model.MsgModel;
 import com.inno72.msg.center.model.MsgTemplateModel;
@@ -460,8 +457,14 @@ public class MsgModelServiceImpl implements MsgModelService {
 			logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
 			template.setTransmissionContent(content);
 			logger.info("透传消息内容: {}", content);
-			result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(),
-					pushModel.getAppType());
+
+			if (StringUtil.isNotEmpty(pushModel.getTags())) { // 判断参数里带tags
+				result = gpushSendHandler.tag(template, pushModel.getOsType(), pushModel.getAppType(), Arrays.asList(pushModel.getTags()));
+			} else {
+				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(),
+						pushModel.getAppType());
+			}
+
 		} else if (pushModel.getTemplateType() == TransmissionTemplateType.NOTIFICATION_OPEN_APPLICATION.v()) {
 
 			// logger.info("通知打开应用消息");
@@ -509,6 +512,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 		pushModel.setTitle(map.get("title"));
 		pushModel.setText(map.get("text"));
+		pushModel.setTags(map.get("tags"));
 
 		map.remove("title");
 		map.remove("text");

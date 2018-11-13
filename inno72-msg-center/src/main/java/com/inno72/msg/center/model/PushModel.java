@@ -29,6 +29,11 @@ public class PushModel extends AbstractMsgModel {
 	private String text;
 
 	/**
+	 * 标签
+	 */
+	private String tags;
+
+	/**
 	 * 通知铃声文件名
 	 */
 	private String sound = "default";
