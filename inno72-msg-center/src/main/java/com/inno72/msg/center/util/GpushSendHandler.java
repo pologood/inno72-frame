@@ -110,7 +110,7 @@ public class GpushSendHandler {
 
 		IPushResult ret = null;
 		try {
-			ret = push.pushMessageToApp(message,"");
+			ret = push.pushMessageToApp(message,"checkapp");
 		} catch (RequestException e) {
 			e.printStackTrace();
 			logger.error("发送失败，准备重试");
