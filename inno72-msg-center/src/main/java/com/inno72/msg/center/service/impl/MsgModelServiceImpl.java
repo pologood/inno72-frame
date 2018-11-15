@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.inno72.msg.center.*;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -266,10 +267,14 @@ public class MsgModelServiceImpl implements MsgModelService {
 		String toparty = addedParam.get("toparty");
 		String totag = addedParam.get("totag");
 		String agentid = addedParam.get("agentid");
-		if (StringUtil.notEmpty(touser)) qyMsgModel.setTouser(touser);
-		if (StringUtil.notEmpty(toparty)) qyMsgModel.setTouser(toparty);
-		if (StringUtil.notEmpty(totag)) qyMsgModel.setTotag(totag);
-		if (StringUtil.notEmpty(agentid)) qyMsgModel.setAgentid(Integer.parseInt(agentid));
+		if (StringUtil.notEmpty(touser))
+			qyMsgModel.setTouser(touser);
+		if (StringUtil.notEmpty(toparty))
+			qyMsgModel.setTouser(toparty);
+		if (StringUtil.notEmpty(totag))
+			qyMsgModel.setTotag(totag);
+		if (StringUtil.notEmpty(agentid))
+			qyMsgModel.setAgentid(Integer.parseInt(agentid));
 
 		qyMsgModel.setMsgtype("text");
 		qyMsgModel.setText(textModel);
@@ -310,8 +315,9 @@ public class MsgModelServiceImpl implements MsgModelService {
 			model.setChatid(null);
 			result = GroupChatHandler.sendRabotMsg(token, model);
 		} else if (msgModel.isMiniApp()) {
-			result = CorpChatHandler.asyncsendText(msgModel.getModel().getReceiver(), this.getDDToken(),
-					msgModel.getUserIds(), content);
+			result = CorpChatHandler
+					.asyncsendText(msgModel.getModel().getReceiver(), this.getDDToken(), msgModel.getUserIds(),
+							content);
 		} else {
 			String token = getDDToken();
 			result = GroupChatHandler.send(token, model);
@@ -459,33 +465,33 @@ public class MsgModelServiceImpl implements MsgModelService {
 			logger.info("透传消息内容: {}", content);
 
 			if (StringUtil.isNotEmpty(pushModel.getTags())) { // 判断参数里带tags
-				result = gpushSendHandler.tag(template, pushModel.getOsType(), pushModel.getAppType(), Arrays.asList(pushModel.getTags()));
+				result = gpushSendHandler.tag(template, pushModel.getOsType(), pushModel.getAppType(),
+						Arrays.asList(pushModel.getTags()));
 			} else {
-				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(),
-						pushModel.getAppType());
+				result = gpushSendHandler
+						.single(msgModel.getReceiver(), template, pushModel.getOsType(), pushModel.getAppType());
 			}
 
 		} else if (pushModel.getTemplateType() == TransmissionTemplateType.NOTIFICATION_OPEN_APPLICATION.v()) {
+			logger.info("通知打开应用消息");
+			// IOS系统较事逼
+			if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
+				TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
+						pushModel.getTransmissionType(), pushModel.getSound());
+				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(), pushModel.getAppType());
+			} else {
+				NotificationTemplate template = new NotificationTemplate();
+				template.setTransmissionType(pushModel.getTransmissionType());
+				logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
+				template.setTransmissionContent(content);
 
-			// logger.info("通知打开应用消息");
-			// // IOS系统较事逼
-			// if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
-			// TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
-			// pushModel.getTransmissionType(), pushModel.getSound());
-			// result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
-			// } else {
-			// NotificationTemplate template = new NotificationTemplate();
-			// template.setTransmissionType(pushModel.getTransmissionType());
-			// logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
-			// template.setTransmissionContent(content);
-			//
-			// logger.info("通知消息透传内容: {}", content);
-			// logger.info("通知消息标题: {}", pushModel.getTitle());
-			// logger.info("通知消息内容: {}", pushModel.getText());
-			// template.setTitle(pushModel.getTitle());
-			// template.setText(pushModel.getText());
-			// result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType());
-			// }
+				logger.info("通知消息透传内容: {}", content);
+				logger.info("通知消息标题: {}", pushModel.getTitle());
+				logger.info("通知消息内容: {}", pushModel.getText());
+				template.setTitle(pushModel.getTitle());
+				template.setText(pushModel.getText());
+				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(), pushModel.getAppType());
+			}
 		}
 
 		boolean status = result.get("result").toString().toLowerCase().equals("ok");
@@ -580,8 +586,9 @@ public class MsgModelServiceImpl implements MsgModelService {
 		Query query = new Query();
 		if (msgModel.getKey() != null && !"".equals(msgModel.getKey())) {
 			Pattern pattern = Pattern.compile("^.*" + msgModel.getKey() + ".*$", Pattern.CASE_INSENSITIVE);
-			query.addCriteria(new Criteria().orOperator(Criteria.where("receiver").regex(pattern),
-					Criteria.where("sentBy").regex(pattern), Criteria.where("code").regex(pattern)));
+			query.addCriteria(new Criteria()
+					.orOperator(Criteria.where("receiver").regex(pattern), Criteria.where("sentBy").regex(pattern),
+							Criteria.where("code").regex(pattern)));
 		}
 		if (msgModel.getStartTime() != null) {
 			Criteria timeParam = Criteria.where("sentTime")
@@ -651,7 +658,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	/**
 	 * 获取微信token
-	 * 
+	 *
 	 * @return
 	 * @author Houkm 2017年6月16日
 	 */
@@ -672,7 +679,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	/**
 	 * 获取钉钉token
-	 * 
+	 *
 	 * @return
 	 * @author Houkm 2017年6月16日
 	 */
@@ -694,7 +701,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	/**
 	 * 处理微信接口返回结果
-	 * 
+	 *
 	 * @param result
 	 * @param msgModel
 	 * @author Houkm 2017年6月16日
@@ -714,7 +721,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	/**
 	 * 处理钉钉接口返回结果
-	 * 
+	 *
 	 * @param result
 	 * @param msgModel
 	 * @author Houkm 2017年6月16日
@@ -738,7 +745,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	/**
 	 * 处理钉钉开放接口返回结果
-	 * 
+	 *
 	 * @param result
 	 * @param msgModel
 	 * @author Houkm 2017年6月16日
@@ -845,7 +852,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 	/**
 	 * 百度熊掌号token
-	 * 
+	 *
 	 * @return
 	 * @author Houkm 2018年4月2日
 	 */
