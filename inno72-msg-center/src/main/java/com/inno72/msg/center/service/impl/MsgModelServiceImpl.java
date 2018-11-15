@@ -475,17 +475,26 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 		} else if (pushModel.getTemplateType() == TransmissionTemplateType.NOTIFICATION_OPEN_APPLICATION.v()) {
 			logger.info("通知打开应用消息");
-			NotificationTemplate template = new NotificationTemplate();
-			template.setTransmissionType(pushModel.getTransmissionType());
-			logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
-			template.setTransmissionContent(content);
+			// IOS系统较事逼
+			logger.info("test is {}", pushModel.getText());
+			logger.info("content is ", content);
+			if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
+				TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
+						pushModel.getTransmissionType(), pushModel.getSound());
+				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(), pushModel.getAppType());
+			} else {
+				NotificationTemplate template = new NotificationTemplate();
+				template.setTransmissionType(pushModel.getTransmissionType());
+				logger.info("收到消息是否打开应用:{}", pushModel.getTransmissionType() == 1 ? "启动" : "不启动");
+				template.setTransmissionContent(content);
 
-			logger.info("通知消息透传内容: {}", content);
-			logger.info("通知消息标题: {}", pushModel.getTitle());
-			logger.info("通知消息内容: {}", pushModel.getText());
-			template.setTitle(pushModel.getTitle());
-			template.setText(pushModel.getText());
-			result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(), pushModel.getAppType());
+				logger.info("通知消息透传内容: {}", content);
+				logger.info("通知消息标题: {}", pushModel.getTitle());
+				logger.info("通知消息内容: {}", pushModel.getText());
+				template.setTitle(pushModel.getTitle());
+				template.setText(pushModel.getText());
+				result = gpushSendHandler.single(msgModel.getReceiver(), template, pushModel.getOsType(), pushModel.getAppType());
+			}
 		}
 
 		boolean status = result.get("result").toString().toLowerCase().equals("ok");
