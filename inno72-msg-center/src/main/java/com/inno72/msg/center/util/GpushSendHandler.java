@@ -128,6 +128,9 @@ public class GpushSendHandler {
 			logger.info("苹果普通消息");
 			tpl.setAppId("vxa494yf3Z7cb22lmvIxq2");
 			tpl.setAppkey("qPXgOKKzFkAxtUD5IhDLk2");
+			if (!isTag) {
+				target.setAppId("vxa494yf3Z7cb22lmvIxq2");
+			}
 			return iosPush;
 		} else if (osType == OsType.ANDRIOD.v()) {
 			if(appType==2){
