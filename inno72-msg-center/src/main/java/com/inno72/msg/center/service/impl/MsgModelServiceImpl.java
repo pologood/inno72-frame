@@ -475,8 +475,6 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 		} else if (pushModel.getTemplateType() == TransmissionTemplateType.NOTIFICATION_OPEN_APPLICATION.v()) {
 			logger.info("通知打开应用消息");
-			// IOS系统较事逼
-			logger.info("content is " + content);
 			if (pushModel.getOsType() == OsType.IOS.v() || pushModel.getOsType() == OsType.PRO.v()) {
 				TransmissionTemplate template = generateIOSNotifyTemplate(pushModel.getText(), content,
 						pushModel.getTransmissionType(), pushModel.getSound());
@@ -848,7 +846,6 @@ public class MsgModelServiceImpl implements MsgModelService {
 		payload.addCustomMsg("payload", content);
 		payload.setContentAvailable(1);
 		payload.setSound(sound == null || sound.equals("") ? "default" : sound);
-		logger.info("generateIOSNotifyTemplate text is " + text);
 		payload.setAlertMsg(new APNPayload.SimpleAlertMsg(text));
 		template.setAPNInfo(payload);
 		return template;
