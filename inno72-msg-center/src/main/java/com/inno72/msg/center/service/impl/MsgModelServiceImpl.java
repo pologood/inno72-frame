@@ -845,7 +845,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 
 		APNPayload payload = new APNPayload();
 		payload.setAutoBadge("+1");
-		payload.addCustomMsg("content", content);
+		payload.addCustomMsg("payload", content);
 		payload.setContentAvailable(1);
 		payload.setSound(sound == null || sound.equals("") ? "default" : sound);
 		logger.info("generateIOSNotifyTemplate text is " + text);
