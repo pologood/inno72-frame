@@ -56,6 +56,9 @@ public class DBConfig {
 		datasource.setTimeBetweenEvictionRunsMillis( 5 * 1000 );
 		datasource.setMinEvictableIdleTimeMillis( 5 * 1000 );
 		datasource.setMaxActive(20);
+		List<String> list = new ArrayList<String>();
+		list.add("set names utf8mb4");
+		datasource.setConnectionInitSqls(list);
 		// 过添加滤器
 		Slf4jLogFilter logFilter = new Slf4jLogFilter();
 		logger.info("配置DruidDataSource logFilter: statementLogEnabled=false");
