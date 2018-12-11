@@ -146,6 +146,11 @@ public interface MsgModelService {
 	 */
 	Result<MsgModel> resend(String id);
 
+	/**
+	 * 发送企业号信息
+	 * @param mqModel
+	 */
 	void sendQyWechatMsg(MsgDTO mqModel);
+
 
 }

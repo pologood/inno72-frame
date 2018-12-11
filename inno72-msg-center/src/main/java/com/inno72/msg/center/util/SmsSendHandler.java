@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.inno72.config.client.SMSProperties;
 import com.inno72.plugin.http.HttpClient;
 
@@ -60,6 +61,27 @@ public class SmsSendHandler {
 		params.put("action", "send");
 		params.put("extno", "");
 		String result = HttpClient.form(smsProperties.getZhuwang().getApi(), params, null);
+		return result;
+	}
+	
+	
+	/**
+	 * 发送联江短信
+	 * @param mobile
+	 * @param msg
+	 * @return
+	 */
+	public String sendLianJiang(String mobile, String msg) {
+		long temp = System.currentTimeMillis();
+		Map<String, Object> map = new HashMap<>();
+		map.put("content", msg);
+		map.put("code", temp);
+		map.put("mobile", mobile);
+		map.put("account", smsProperties.getLianjiang().getAccount());
+		map.put("timestamp", temp);
+		String key = Md5Util.getMD5String(smsProperties.getLianjiang().getKey() + Md5Util.getMD5String(String.valueOf(temp)));
+		map.put("key", key);
+		String result = HttpClient.post(smsProperties.getLianjiang().getApi(), JSON.toJSONString(map));
 		return result;
 	}
 
