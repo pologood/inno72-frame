@@ -464,7 +464,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 		boolean status = false;
 		String channel = redisUtil.get(SMS_FAIL+msgModel.getReceiver());
 		logger.info("channel:{}",channel);
-		if(StringUtil.isEmpty(channel)||channel.equals(MessageChildType.LIANJIANG.v())){
+		if(StringUtil.isEmpty(channel)||channel.equals(String.valueOf(MessageChildType.LIANJIANG.v()))){
 			logger.info("云片短信: {}", message);
 			// 发送短信信息
 			result = smsSendHandler.sendYunpian(msgModel.getReceiver(), message);
