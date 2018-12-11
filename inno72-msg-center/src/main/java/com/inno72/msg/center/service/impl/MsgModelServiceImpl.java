@@ -463,6 +463,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 		String result = null;
 		boolean status = false;
 		String channel = redisUtil.get(SMS_FAIL+msgModel.getReceiver());
+		logger.info("channel:{}",channel);
 		if(StringUtil.isEmpty(channel)||channel.equals(MessageChildType.LIANJIANG.v())){
 			logger.info("云片短信: {}", message);
 			// 发送短信信息
@@ -473,7 +474,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 			status = jsonObj.getInteger("code") == 0;
 			msgModel.setStatus(status ? StateType.SUCCESS.getV() : StateType.FAILURE.getV());
 			msgModel.setStatusMessage(jsonObj.getString("msg"));
-			redisUtil.setex(SMS_FAIL+msgModel.getReceiver(), 60*60, String.valueOf( MessageChildType.YUNPIAN.v()));
+			redisUtil.set(SMS_FAIL+msgModel.getReceiver(), String.valueOf( MessageChildType.YUNPIAN.v()));
 		}else{
 			logger.info("联江短信: {}", message);
 			// 发送短信信息
@@ -484,7 +485,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 			status = jsonObj.getInteger("code") == 20000;
 			msgModel.setStatus(status ? StateType.SUCCESS.getV() : StateType.FAILURE.getV());
 			msgModel.setStatusMessage(jsonObj.getString("desc"));
-			redisUtil.setex(SMS_FAIL+msgModel.getReceiver(), 60*60, String.valueOf( MessageChildType.LIANJIANG.v()));
+			redisUtil.set(SMS_FAIL+msgModel.getReceiver(), String.valueOf( MessageChildType.LIANJIANG.v()));
 		}
 		msgModel.setResult(result);
 		this.save(msgModel);
