@@ -449,7 +449,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 		msgModel.setContent(textModel);
 		if (checkSendTime(msgModel)) {
 			if (msgModel.getModel().getMessageChildType() == MessageChildType.AUTO.v()) {
-				
+				this.sendValidateCodeSms(msgModel);
 			}else{
 				this.sendSms(msgModel);
 			}
