@@ -3,11 +3,14 @@ package com.inno72.msg.center.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.inno72.config.client.SMSProperties;
+import com.inno72.msg.center.service.impl.MsgModelServiceImpl;
 import com.inno72.plugin.http.HttpClient;
 
 /**
@@ -19,6 +22,9 @@ import com.inno72.plugin.http.HttpClient;
  */
 @Component
 public class SmsSendHandler {
+	
+	private Logger logger = LoggerFactory.getLogger(SmsSendHandler.class);
+
 
 	@Autowired
 	SMSProperties smsProperties;
@@ -81,6 +87,7 @@ public class SmsSendHandler {
 		map.put("timestamp", temp);
 		String key = Md5Util.getMD5String(smsProperties.getLianjiang().getKey() + Md5Util.getMD5String(String.valueOf(temp)));
 		map.put("key", key);
+		logger.info("联江短信发送参数：{}"+JSON.toJSONString(map));
 		String result = HttpClient.post(smsProperties.getLianjiang().getApi(), JSON.toJSONString(map));
 		return result;
 	}
