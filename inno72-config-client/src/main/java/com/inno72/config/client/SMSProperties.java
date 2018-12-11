@@ -14,6 +14,7 @@ public class SMSProperties extends AbstractProperties {
 
 	private Yunpian yunpian;
 	private Zhuwang zhuwang;
+	private Lianjiang lianjiang;
 
 	public Yunpian getYunpian() {
 		return yunpian;
@@ -30,6 +31,16 @@ public class SMSProperties extends AbstractProperties {
 	public void setZhuwang(Zhuwang zhuwang) {
 		this.zhuwang = zhuwang;
 	}
+	
+
+	public Lianjiang getLianjiang() {
+		return lianjiang;
+	}
+
+	public void setLianjiang(Lianjiang lianjiang) {
+		this.lianjiang = lianjiang;
+	}
+
 
 	public static class Yunpian {
 		private String api;
@@ -101,5 +112,30 @@ public class SMSProperties extends AbstractProperties {
 		}
 
 	}
+	public static class Lianjiang {
+		private String api;
+		private String key;
+		private String account;
+		public String getApi() {
+			return api;
+		}
+		public void setApi(String api) {
+			this.api = api;
+		}
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public String getAccount() {
+			return account;
+		}
+		public void setAccount(String account) {
+			this.account = account;
+		}
+
+	}
+	
 
 }
