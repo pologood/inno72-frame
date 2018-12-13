@@ -474,8 +474,11 @@ public class MsgModelServiceImpl implements MsgModelService {
 			status = jsonObj.getInteger("code") == 0;
 			msgModel.setStatus(status ? StateType.SUCCESS.getV() : StateType.FAILURE.getV());
 			msgModel.setStatusMessage(jsonObj.getString("msg"));
+			if(!status){
 			redisUtil.set(SMS_FAIL+msgModel.getReceiver(), String.valueOf( MessageChildType.YUNPIAN.v()));
-		}else{
+				sendValidateCodeSms(msgModel);
+			}
+			}else{
 			logger.info("联江短信: {}", message);
 			// 发送短信信息
 			result = smsSendHandler.sendLianJiang(msgModel.getReceiver(), message);
