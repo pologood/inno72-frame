@@ -32,7 +32,7 @@ public enum MessageChildType {
 	/**
 	 * 联江短信
 	 */
-	LIANJIANG(2),
+	LIANJIANG(3),
 	/**
 	 * 自动切换通道短信
 	 */
