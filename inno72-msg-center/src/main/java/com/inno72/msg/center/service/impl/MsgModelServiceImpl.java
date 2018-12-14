@@ -97,6 +97,9 @@ public class MsgModelServiceImpl implements MsgModelService {
 	private static final String QY_WECHAT_SENDURL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
 
 	private static final String QY_WECHAT_ACCESSTOKEN = "public:qyCheckAgentAccToken";
+	
+	private static final String SMS_FAIL = "sms:";
+
 
 	@Override
 	public void save(MsgModel msgModel) {
@@ -445,7 +448,53 @@ public class MsgModelServiceImpl implements MsgModelService {
 		});
 		msgModel.setContent(textModel);
 		if (checkSendTime(msgModel)) {
-			this.sendSms(msgModel);
+			if (msgModel.getModel().getMessageChildType() == MessageChildType.AUTO.v()) {
+				this.sendValidateCodeSms(msgModel);
+			}else{
+				this.sendSms(msgModel);
+			}
+		}
+	}
+	
+	public void sendValidateCodeSms(MsgModel msgModel) {
+		// 获取短信信息
+		TextModel textModel = (TextModel) msgModel.getContent();
+		String message = textModel.getContent();
+		String result = null;
+		boolean status = false;
+		String channel = redisUtil.get(SMS_FAIL+msgModel.getReceiver());
+		logger.info("channel:{}",channel);
+		if(StringUtil.isEmpty(channel)||channel.equals(String.valueOf(MessageChildType.LIANJIANG.v()))){
+			logger.info("云片短信: {}", message);
+			// 发送短信信息
+			result = smsSendHandler.sendYunpian(msgModel.getReceiver(), message);
+			logger.info("云片短信结果: {}", result);
+			JSONObject jsonObj = JSON.parseObject(result);
+			// 根据发送短信的结果设置消息状态和消息文本
+			status = jsonObj.getInteger("code") == 0;
+			msgModel.setStatus(status ? StateType.SUCCESS.getV() : StateType.FAILURE.getV());
+			msgModel.setStatusMessage(jsonObj.getString("msg"));
+			if(!status){
+			redisUtil.set(SMS_FAIL+msgModel.getReceiver(), String.valueOf( MessageChildType.YUNPIAN.v()));
+				sendValidateCodeSms(msgModel);
+			}
+			}else{
+			logger.info("联江短信: {}", message);
+			// 发送短信信息
+			result = smsSendHandler.sendLianJiang(msgModel.getReceiver(), message);
+			logger.info("联江短信结果: {}", result);
+			JSONObject jsonObj = JSON.parseObject(result);
+			// 根据发送短信的结果设置消息状态和消息文本
+			status = jsonObj.getInteger("code") == 20000;
+			msgModel.setStatus(status ? StateType.SUCCESS.getV() : StateType.FAILURE.getV());
+			msgModel.setStatusMessage(jsonObj.getString("desc"));
+			redisUtil.set(SMS_FAIL+msgModel.getReceiver(), String.valueOf( MessageChildType.LIANJIANG.v()));
+		}
+		msgModel.setResult(result);
+		this.save(msgModel);
+		if (!status) {
+			throw ExceptionBuilder.build(exceptionProp)
+					.format("send_msg_failed", msgModel.getId(), msgModel.getStatusMessage()).create();
 		}
 	}
 
@@ -871,5 +920,7 @@ public class MsgModelServiceImpl implements MsgModelService {
 		// todo gxg 待修改
 		return "";
 	}
+
+	
 
 }
