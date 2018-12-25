@@ -28,7 +28,15 @@ public enum MessageChildType {
 	/**
 	 * 筑望短信
 	 */
-	ZHUWANG(2);
+	ZHUWANG(2),
+	/**
+	 * 联江短信
+	 */
+	LIANJIANG(3),
+	/**
+	 * 自动切换通道短信
+	 */
+	AUTO(9);
 
 	private int v;
 
